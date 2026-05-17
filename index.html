@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Daily Sips</title>
+  <script type="module">
+  import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser.js';
+  window.__removeBg = removeBackground;
+  window.__removeBgReady = true;
+</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════ LANDING ══════════════════ -->
+<section class="landing" id="landing">
+  <div class="landing-card">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <div class="logo-ring"></div>
+      <div class="logo-circle">
+        <img src="5778369590848065896_121.jpg" alt="SOBĀ"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="logo-fallback">S</span>
+      </div>
+    </div>
+
+    <!-- Brand name (drawn SVG) -->
+    <div class="brand-svg-wrap" aria-label="SOBĀ">
+      <svg class="brand-svg" viewBox="0 0 220 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="50%" y="40" text-anchor="middle"
+              font-family="'Plus Jakarta Sans', sans-serif"
+              font-size="44" font-weight="900" letter-spacing="8"
+              fill="none" stroke="#1b4332" stroke-width="2"
+              stroke-dasharray="600" stroke-dashoffset="600"
+              class="brand-draw-text">Daily Sips</text>
+        <text x="50%" y="40" text-anchor="middle"
+              font-family="'Plus Jakarta Sans', sans-serif"
+              font-size="44" font-weight="900" letter-spacing="8"
+              fill="#1b4332" opacity="0" class="brand-fill-text">Daily Sips</text>
+      </svg>
+    </div>
+
+    <!-- Tagline -->
+    <p class="tagline" id="tagline">Modern Daily Sips &amp; drinks • fast • fresh</p>
+
+    <!-- Social pills -->
+    <div class="social-row">
+      <a class="social-pill" href="https://www.instagram.com/dailysipscoffee" target="_blank" aria-label="Instagram">
+        <span class="s-dot insta"></span><span id="s-insta">INSTAGRAM</span>
+      </a>
+      <a class="social-pill" href="https://www.facebook.com/YourPage" target="_blank" aria-label="Facebook">
+        <span class="s-dot face"></span><span id="s-face">FACEBOOK</span>
+      </a>
+      <a class="social-pill" href="https://www.tiktok.com/@dailysipscoffee" target="_blank" aria-label="TikTok">
+        <span class="s-dot tiktok"></span><span id="s-tiktok">TIKTOK</span>
+      </a>
+    </div>
+
+    <!-- InstaPay Button -->
+    <button class="instapay-btn" id="instaPayBtn" type="button">
+      <svg class="instapay-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#8B5CF6"/>
+        <path d="M7 12l3 3 7-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 4v2M12 18v2M4 12h2M18 12h2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span id="instaPayLabel">InstaPay</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <!-- Enter Menu -->
+    <div class="enter-block">
+      <div class="green-deco"></div>
+      <button class="enter-btn" id="enterMenuBtn" type="button">
+        <span class="enter-icon">▶</span>
+        <span id="enterLabel">MENU</span>
+      </button>
+    </div>
+
+    <!-- Branches -->
+    <div class="branches-block">
+      <p class="branches-title" id="branchesLabel">OUR BRANCHES</p>
+      <div class="branches-row">
+        <a class="branch-chip" href="https://maps.google.com/?q=Hadayek+October" target="_blank">
+          <span class="branch-pin">📍</span><span id="b1">Hadayek October</span>
+        </a>
+        <a class="branch-chip" href="https://maps.google.com/?q=Sheikh+Zayed" target="_blank">
+          <span class="branch-pin">📍</span><span id="b2">Sheikh Zayed</span>
+        </a>
+        <a class="branch-chip" href="https://maps.google.com/?q=Hossary" target="_blank">
+          <span class="branch-pin">📍</span><span id="b3">El Hossary</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ INSTAPAY MODAL ══════════════════ -->
+<div class="instapay-overlay" id="instaPayOverlay">
+  <div class="instapay-modal" id="instaPayModal" role="dialog" aria-modal="true">
+    <button class="instapay-close" id="instaPayClose" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <div class="instapay-header">
+      <div class="instapay-logo-wrap">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+          <rect width="40" height="40" rx="12" fill="#8B5CF6"/>
+          <path d="M11 20l5 5 13-13" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20 7v3M20 30v3M7 20h3M30 20h3" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="instapay-title-text">InstaPay</span>
+      </div>
+      <p class="instapay-subtitle" id="instaPaySubtitle">Pay instantly via InstaPay</p>
+    </div>
+
+    <!-- Number display + copy -->
+    <div class="instapay-number-wrap">
+      <div class="instapay-number-label" id="instaPayNumberLabel">InstaPay Number</div>
+      <div class="instapay-number-row">
+        <span class="instapay-number" id="instaPayNumber">01XXXXXXXXXX</span>
+        <button class="instapay-copy-btn" id="instaPayCopyBtn" title="Copy number">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span id="copyBtnLabel">Copy</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="instapay-qr-wrap">
+      <div class="instapay-qr-label" id="instaPayQrLabel">Scan QR Code</div>
+      <div class="instapay-qr-box">
+        <div id="instaPayQR"></div>
+      </div>
+    </div>
+
+    <p class="instapay-note" id="instaPayNote">Scan the QR code or copy the number to pay via any bank app</p>
+  </div>
+</div>
+
+<!-- ══════════════════ MENU PAGE ══════════════════ -->
+<section class="menu-page" id="menuPage">
+
+  <!-- Topbar -->
+  <div class="menu-topbar">
+    <button class="back-btn" id="backBtn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </button>
+
+    <div class="topbar-search-wrap">
+      <svg class="topbar-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input class="topbar-search" id="searchInput" type="text" placeholder="Search..." autocomplete="off" />
+    </div>
+
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="langEn" type="button">EN</button>
+      <button class="lang-btn" id="langAr" type="button">ع</button>
+    </div>
+
+    <button class="cart-topbar-btn" id="cartTopbarBtn" aria-label="Cart">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+  </div>
+
+  <!-- Categories -->
+  <div class="cat-row" id="catRow"></div>
+
+  <!-- Products -->
+  <div class="products-grid" id="productGrid" aria-live="polite"></div>
+
+</section>
+
+<!-- ══════════════════ PRODUCT MODAL ══════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- Cup + Image Stage -->
+    <div class="modal-stage">
+      <div class="cup-wrap">
+        <div class="css-cup">
+          <div class="cup-body">
+            <div class="cup-liquid" id="cupLiquid"></div>
+          </div>
+          <div class="cup-handle"></div>
+        </div>
+        <img class="modal-drink-img" id="modalDrinkImg" alt="drink" />
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="modal-info">
+      <h3 class="modal-name" id="modalName">—</h3>
+      <div class="modal-price-wrap" id="modalPriceWrap"></div>
+
+      <div class="modal-qty">
+        <button class="qty-btn" id="qtyMinus" aria-label="Less">−</button>
+        <span class="qty-val" id="qtyVal">1</span>
+        <button class="qty-btn" id="qtyPlus" aria-label="More">+</button>
+      </div>
+
+      <button class="add-to-cart-btn" id="addToCartBtn" type="button">
+        <span id="addLabel">Add to Cart</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CART SHEET ══════════════════ -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-sheet" id="cartSheet">
+    <div class="cart-handle"></div>
+    <div class="cart-head">
+      <h3 class="cart-title" id="cartTitle">Your Order</h3>
+      <button class="cart-close-btn" id="cartCloseBtn">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="cart-inputs-row">
+        <input class="cart-input" id="tableNum" type="number" min="1" placeholder="Table #" />
+        <input class="cart-input" id="peopleNum" type="number" min="1" placeholder="Guests" />
+      </div>
+      <textarea class="cart-note" id="cartNote" placeholder="Special notes..." rows="2"></textarea>
+      <div class="cart-total-box" id="cartTotalBox" style="display:none"></div>
+      <button class="wa-btn" id="waBtn" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.117 1.521 5.852L0 24l6.335-1.477A11.955 11.955 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.803a9.803 9.803 0 0 1-5.032-1.387l-.361-.214-3.761.877.938-3.641-.235-.374A9.795 9.795 0 0 1 2.197 12C2.197 6.577 6.577 2.197 12 2.197S21.803 6.577 21.803 12 17.423 21.803 12 21.803z"/>
+        </svg>
+        <span id="waLabel">Confirm Order</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="toastMsg">Added ✓</span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

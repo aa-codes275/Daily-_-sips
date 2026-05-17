@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SOBĀ QR Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --pist-light: #e4f5e0;
+      --pist-dark:  #3a7a2e;
+      --green:      #2a6b1f;
+      --yellow:     #FFD400;
+      --ink:        #1b3a18;
+      --muted:      #52796f;
+      --line:       rgba(27,58,24,0.12);
+      --shadow:     0 24px 70px rgba(27,58,24,0.16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(150deg, #c4e3bb 0%, #daf0d4 30%, #edf9e8 60%, #f6fff4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient blob */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,212,0,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      padding: 36px 28px 32px;
+      width: min(380px, 100%);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: cardIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Logo */
+    .logo-wrap {
+      position: relative;
+      width: 90px; height: 90px;
+      margin: 0 auto 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-ring {
+      position: absolute; inset: -6px; border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 50%, var(--yellow) 100%);
+      animation: ringRotate 4s linear infinite;
+    }
+    @keyframes ringRotate { to { transform: rotate(360deg); } }
+    .logo-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--pist-light);
+      border: 3px solid var(--yellow);
+      overflow: hidden; position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900; color: var(--pist-dark);
+    }
+    .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+    .brand-name {
+      font-size: 28px; font-weight: 900; letter-spacing: 6px;
+      color: var(--ink); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .brand-line {
+      width: 50px; height: 2.5px;
+      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+      margin: 0 auto 22px;
+    }
+
+    /* QR Box */
+    .qr-box {
+      background: #fff;
+      border: 3px solid rgba(255,212,0,.5);
+      border-radius: 20px;
+      padding: 16px;
+      display: inline-block;
+      box-shadow: 0 0 0 6px rgba(255,212,0,.08), var(--shadow);
+      margin-bottom: 20px;
+    }
+    #qrcode canvas, #qrcode img {
+      display: block;
+      border-radius: 8px;
+    }
+
+    .scan-label {
+      font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 5px;
+    }
+    .scan-sub {
+      font-size: 12px; color: var(--muted); font-weight: 600;
+      line-height: 1.6; margin-bottom: 22px;
+    }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 10px; }
+    .btn-dl {
+      flex: 1; padding: 14px;
+      background: linear-gradient(135deg, var(--yellow), #e6bf00);
+      border: none; border-radius: 14px;
+      color: var(--ink); font-family: inherit;
+      font-size: 14px; font-weight: 900;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 6px 20px rgba(255,212,0,.4);
+    }
+    .btn-dl:hover  { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,212,0,.5); }
+    .btn-dl:active { transform: scale(.96); }
+
+    .btn-print {
+      padding: 14px 18px;
+      background: #fff; border: 1.5px solid var(--line);
+      border-radius: 14px; color: var(--muted);
+      font-family: inherit; font-size: 14px; font-weight: 800;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform .15s, border-color .15s;
+    }
+    .btn-print:hover { transform: translateY(-2px); border-color: var(--pist-dark); }
+    .btn-print:active { transform: scale(.96); }
+
+    /* URL chip */
+    .url-chip {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background: var(--pist-light);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    /* Decorative corner dots */
+    .corner {
+      position: absolute;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,212,0,.4);
+    }
+    .corner.tl { top: 18px; left: 18px; }
+    .corner.tr { top: 18px; right: 18px; }
+    .corner.bl { bottom: 18px; left: 18px; }
+    .corner.br { bottom: 18px; right: 18px; }
+
+    @media print {
+      body { background: white; }
+      .btn-row { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-ring"></div>
+    <div class="logo-circle">
+      <img src="5778369590848065896_121.jpg" alt="SOBĀ"
+           onerror="this.style.display='none';this.parentElement.textContent='S'">
+    </div>
+  </div>
+
+  <div class="brand-name">SOBĀ</div>
+  <div class="brand-line"></div>
+
+  <!-- QR Code -->
+  <div class="qr-box">
+    <div id="qrcode"></div>
+  </div>
+
+  <p class="scan-label">📱 Scan to open the menu</p>
+  <p class="scan-sub">Point your phone camera at the code<br>to access SOBĀ's menu instantly</p>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn-dl" onclick="downloadQR()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+      </svg>
+      Download
+    </button>
+    <button class="btn-print" onclick="window.print()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+      </svg>
+      Print
+    </button>
+  </div>
+
+  <!-- URL -->
+  <div class="url-chip" id="urlChip">—</div>
+</div>
+
+<script>
+  // ← Put your menu URL here
+  const MENU_URL = 'https://aa-codes275.github.io/nwe/';
+
+  document.getElementById('urlChip').textContent = MENU_URL;
+
+  const qr = new QRCode(document.getElementById('qrcode'), {
+    text: MENU_URL,
+    width: 220,
+    height: 220,
+    colorDark: '#1b3a18',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  function downloadQR() {
+    setTimeout(() => {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (!canvas) { alert('Please wait a moment and try again'); return; }
+      const link = document.createElement('a');
+      link.download = 'soba-menu-qr.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }, 300);
+  }
+</script>
+
+</body>
+</html>
