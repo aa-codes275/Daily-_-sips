@@ -126,7 +126,7 @@
     }
     .table-row {
       display: grid;
-      grid-template-columns: 60px 1fr 140px 90px 110px 110px;
+      grid-template-columns: 60px 1fr 140px 100px 90px 110px;
       align-items: center;
       gap: 12px;
       padding: 14px 18px;
@@ -152,12 +152,11 @@
       width: 100%; 
       height: 100%; 
       object-fit: contain; 
-      mix-blend-mode: multiply; 
     }
 
     .prod-name-col { min-width: 0; }
     .prod-name-en  { font-size: 14px; font-weight: 800; color: var(--ink); }
-    .prod-name-ar  { font-size: 12px; color: var(--muted); font-weight: 600; text-align: left; }
+    .prod-desc-preview { font-size: 11px; color: var(--muted); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
     .prod-cat {
       display: inline-block; padding: 3px 10px; border-radius: 20px;
       background: var(--pist-light); color: var(--pist-dark);
@@ -309,16 +308,18 @@
     }
 
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid-edit { display: flex; flex-direction: column; gap: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.full { grid-column: 1/-1; }
     .form-label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
-    .form-input, .form-select {
+    .form-input, .form-select, .form-textarea {
       padding: 11px 14px; border-radius: 12px; border: 1.5px solid var(--line);
       background: var(--pist-light); color: var(--ink); font-family: inherit;
       font-size: 14px; font-weight: 600; outline: none;
       transition: border-color .2s;
     }
-    .form-input:focus, .form-select:focus { border-color: var(--yellow); }
+    .form-textarea { resize: vertical; font-size: 13px; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--yellow); }
 
     /* Price type toggle */
     .price-type-row { display: flex; gap: 10px; }
@@ -339,6 +340,7 @@
     }
     .upload-area:hover { border-color: var(--yellow); background: rgba(255,212,0,.05); }
     .upload-area.has-file { border-color: var(--green); background: rgba(42,107,31,.05); }
+    .upload-area.edit-mode { background: #fff; }
     .upload-icon { font-size: 32px; margin-bottom: 8px; }
     .upload-text { font-size: 13px; font-weight: 700; color: var(--muted); }
     .upload-input { display: none; }
@@ -346,7 +348,6 @@
     .upload-preview { 
       max-width: 120px; max-height: 120px; border-radius: 12px; 
       object-fit: contain; margin: 0 auto; display: none; 
-      mix-blend-mode: multiply; 
     }
     .upload-progress { display: none; height: 4px; border-radius: 4px; background: var(--line); margin-top: 10px; overflow: hidden; }
     .upload-bar { height: 100%; background: var(--green); width: 0%; transition: width .3s; }
@@ -499,22 +500,31 @@
     <div class="m-title">Add New Product</div>
 
     <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">Name (English)</label>
-        <input class="form-input" id="f-name-en" type="text" placeholder="e.g. Mango Matcha" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Name (Arabic)</label>
-        <input class="form-input" id="f-name-ar" type="text" placeholder="مثلاً: مانجو ماتشا" style="text-align: right;" />
+      <div class="form-group full">
+        <label class="form-label">Product Name / اسم المشروب</label>
+        <input class="form-input" id="f-name" type="text" placeholder="e.g. Mango Matcha / مانجو ماتشا" required />
       </div>
 
       <div class="form-group">
         <label class="form-label">Category / الفئة</label>
-        <input class="form-input" id="f-cat" type="text" placeholder="e.g. ice, drinks, hot" />
+        <select class="form-select" id="f-cat">
+          <option value="hot">مشروبات ساخنة (Hot)</option>
+          <option value="coffee">قهوة (Coffee)</option>
+          <option value="cold">مشروبات باردة (Cold)</option>
+          <option value="ice">مشروبات مثلجة (Ice)</option>
+          <option value="icen">آيس كريمي (Iced)</option>
+          <option value="juice">عصائر (Juice)</option>
+          <option value="food">طعام (Food)</option>
+        </select>
       </div>
       <div class="form-group">
         <label class="form-label">Badge (optional)</label>
         <input class="form-input" id="f-badge" type="text" placeholder="e.g. New, Hot, Special" />
+      </div>
+
+      <div class="form-group full">
+        <label class="form-label">Description / وصف المشروب ومكوناته</label>
+        <textarea class="form-textarea" id="f-desc" rows="3" placeholder="اكتب مكونات المشروب التي ستظهر للعميل داخل النافذة..."></textarea>
       </div>
 
       <div class="form-group">
@@ -534,7 +544,7 @@
         <label class="form-label">Price Type</label>
         <div class="price-type-row">
           <button class="price-type-btn active" id="ptSingle" type="button">Single Price</button>
-          <button class="price-type-btn" id="ptSizes" type="button">S / L Sizes</button>
+          <button class="price-type-btn" id="ptSizes" type="button">M / L Sizes</button>
         </div>
       </div>
 
@@ -544,12 +554,12 @@
       </div>
 
       <div class="form-group" id="sizePriceGroupSm" style="display:none;">
-        <label class="form-label">Small Price (EGP)</label>
-        <input class="form-input" id="f-price-sm" type="number" min="0" placeholder="0" />
+        <label class="form-label">Medium Price M (EGP)</label>
+        <input class="form-input" id="f-price-medium" type="number" min="0" placeholder="0" />
       </div>
       <div class="form-group" id="sizePriceGroupLg" style="display:none;">
-        <label class="form-label">Large Price (EGP)</label>
-        <input class="form-input" id="f-price-lg" type="number" min="0" placeholder="0" />
+        <label class="form-label">Large Price L (EGP)</label>
+        <input class="form-input" id="f-price-large" type="number" min="0" placeholder="0" />
       </div>
 
       <div class="form-group full">
@@ -577,41 +587,67 @@
 </div>
 
 <div class="m-overlay" id="editModal">
-  <div class="m-box" style="max-width:480px;">
+  <div class="m-box" style="max-width:520px;">
     <button class="m-close" id="closeEditModalBtn">✕</button>
     <div class="m-title" id="editModalTitle">Edit Product</div>
 
-    <div style="display:flex;flex-direction:column;gap:14px;">
+    <div class="form-grid-edit">
       <div class="form-group">
-        <label class="form-label">Name (English)</label>
-        <input class="form-input" id="e-name-en" type="text" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Name (Arabic)</label>
-        <input class="form-input" id="e-name-ar" type="text" style="text-align: right;" />
+        <label class="form-label">Product Name / اسم المشروب</label>
+        <input class="form-input" id="e-name" type="text" required />
       </div>
       <div class="form-group">
         <label class="form-label">Category</label>
-        <input class="form-input" id="e-cat" type="text" />
+        <select class="form-select" id="e-cat">
+          <option value="hot">مشروبات ساخنة (Hot)</option>
+          <option value="coffee">قهوة (Coffee)</option>
+          <option value="cold">مشروبات باردة (Cold)</option>
+          <option value="ice">مشروبات مثلجة (Ice)</option>
+          <option value="icen">آيس كريمي (Iced)</option>
+          <option value="juice">عصائر (Juice)</option>
+          <option value="food">طعام (Food)</option>
+        </select>
       </div>
       <div class="form-group">
         <label class="form-label">Badge (optional)</label>
         <input class="form-input" id="e-badge" type="text" />
       </div>
+
+      <div class="form-group">
+        <label class="form-label">Description / الوصف</label>
+        <textarea class="form-textarea" id="e-desc" rows="3"></textarea>
+      </div>
       
       <div class="form-group">
-        <label class="form-label">Price / Prices Configuration</label>
-        <div id="editPriceRow" style="display:flex;gap:10px;flex-direction:column;">
-          <input class="form-input" id="e-price" type="number" placeholder="Single price" />
-          <div id="editSizesContainer" style="display:none;gap:10px;">
-            <input class="form-input" id="e-price-sm" style="flex:1;" type="number" placeholder="Small Size Price" />
-            <input class="form-input" id="e-price-lg" style="flex:1;" type="number" placeholder="Large Size Price" />
+        <label class="form-label">Price Type</label>
+        <div class="price-type-row" style="margin-bottom: 6px;">
+          <button class="price-type-btn" id="ePtSingle" type="button">Single Price</button>
+          <button class="price-type-btn" id="ePtSizes" type="button">M / L Sizes</button>
+        </div>
+        <div id="editPriceRow">
+          <div id="editSingleContainer">
+            <input class="form-input" id="e-price" type="number" placeholder="Single price" style="width:100%;" />
+          </div>
+          <div id="editSizesContainer" style="display:none; gap:10px;">
+            <input class="form-input" id="e-price-medium" style="flex:1;" type="number" placeholder="Medium Price (M)" />
+            <input class="form-input" id="e-price-large" style="flex:1;" type="number" placeholder="Large Price (L)" />
           </div>
         </div>
       </div>
+
       <div class="form-group">
         <label class="form-label">Discount Price (optional EGP)</label>
         <input class="form-input" id="e-discount" type="number" placeholder="0 = no discount" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Update Product Image (Optional)</label>
+        <div class="upload-area edit-mode" id="editUploadArea">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text" id="editUploadText">Click to change product image</div>
+          <img class="upload-preview" id="editUploadPreview" alt="preview" />
+          <input class="upload-input" id="editUploadInput" type="file" accept="image/*" />
+        </div>
       </div>
     </div>
 
@@ -628,10 +664,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function () {
-  // ⚙️ CONFIG
+  // ═══ CONFIG ═══
   const SUPABASE_URL    = 'https://frerjemdrrrnjmeugokc.supabase.co';
   const SUPABASE_KEY    = 'sb_publishable_2bmCUEdFLhmDGLBQnSiQIA_zZirn5UB';
-  const STORAGE_BUCKET  = 'product-images';
+  const STORAGE_BUCKET  = 'products-images'; 
   const ADMIN_PASSWORD  = '12345'; 
 
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -640,8 +676,10 @@
   let allProducts  = [];
   let editingId    = null;
   let uploadedUrl  = '';
+  let editUploadedUrl = '';
   let localQrBase64 = ''; 
   let priceType    = 'single';
+  let editPriceType = 'single';
 
   function escHtml(str) {
     if (!str) return '';
@@ -650,8 +688,8 @@
 
   function catEmoji(cat) {
     const c = String(cat || '').toLowerCase();
-    if (c.includes('ice')) return '🧋';
-    if (c.includes('drink')) return '🥤';
+    if (c.includes('ice') || c.includes('icen')) return '🧋';
+    if (c.includes('drink') || c.includes('cold') || c.includes('juice')) return '🥤';
     if (c.includes('hot') || c.includes('coffee')) return '☕';
     if (c.includes('soup') || c.includes('food')) return '🍲';
     return '✨';
@@ -684,7 +722,7 @@
     await Promise.all([loadProducts(), loadInstaPaySetting()]);
   }
 
-  // ── InstaPay Settings & QR Loading ──
+  // ── InstaPay Settings ──
   async function loadInstaPaySetting() {
     try {
       const { data } = await _sb.from('settings').select('value').eq('key', 'instapay_number').single();
@@ -758,352 +796,383 @@
     renderTable();
   }
 
+  // ── التحديث الذكي للإحصائيات ──
   function updateStats() {
-    const hidden = allProducts.filter(p => p.is_hidden).length;
-    const cats = new Set(allProducts.map(p => p.category).filter(Boolean));
-    $('statTotal').textContent   = allProducts.length;
-    $('statVisible').textContent = allProducts.length - hidden;
-    $('statHidden').textContent  = hidden;
-    $('statCats').textContent    = cats.size;
+    $('statTotal').textContent = allProducts.length;
+    $('statVisible').textContent = allProducts.filter(p => !p.is_hidden).length;
+    $('statHidden').textContent = allProducts.filter(p => p.is_hidden).length;
+    
+    const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    $('statCats').textContent = cats.length;
   }
 
   function buildFilterDropdown() {
-    const sel = $('filterCat');
-    const current = sel.value;
-    sel.innerHTML = '<option value="all">All categories</option>';
-    const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))].sort();
+    const filter = $('filterCat');
+    const savedVal = filter.value;
+    const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    
+    filter.innerHTML = '<option value="all">All categories</option>';
     cats.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c;
-      opt.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-      sel.appendChild(opt);
+      filter.innerHTML += `<option value="${escHtml(c)}">${escHtml(c)}</option>`;
     });
-    if (current) sel.value = current;
+    filter.value = savedVal;
+  }
+
+  // ── Render Products Table ──
+  function renderTable() {
+    const query = $('adminSearch').value.toLowerCase().trim();
+    const selectedCat = $('filterCat').value;
+
+    let filtered = allProducts;
+
+    if (selectedCat !== 'all') {
+      filtered = filtered.filter(p => p.category === selectedCat);
+    }
+    if (query) {
+      filtered = filtered.filter(p => 
+        (p.name && p.name.toLowerCase().includes(query)) ||
+        (p.description && p.description.toLowerCase().includes(query))
+      );
+    }
+
+    const tbody = $('productTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<div class="empty-table">No products match your filters.</div>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    filtered.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'table-row';
+
+      // Product Image layout
+      const thumbContent = p.image_url 
+        ? `<img src="${p.image_url}" alt="" />` 
+        : catEmoji(p.category);
+
+      // Price string computing
+      let priceStr = '';
+      if (p.price_medium || p.price_large) {
+        priceStr = `M: ${p.price_medium || 0} | L: ${p.price_large || 0} EGP`;
+      } else {
+        priceStr = `${p.price || 0} EGP`;
+      }
+
+      const discStr = p.discount_price ? `<span class="disc-price">${p.discount_price} EGP</span>` : '';
+      const badgeStr = p.badge ? `<span class="prod-badge-chip">${escHtml(p.badge)}</span>` : '';
+      const isChecked = !p.is_hidden ? 'checked' : '';
+
+      row.innerHTML = `
+        <div class="prod-thumb">${thumbContent}</div>
+        <div class="prod-name-col">
+          <div class="prod-name-en">${escHtml(p.name)} ${badgeStr}</div>
+          <div class="prod-desc-preview">${escHtml(p.description || 'No description provided')}</div>
+        </div>
+        <div class="price-col">${priceStr} ${discStr}</div>
+        <div><span class="prod-cat">${escHtml(p.category)}</span></div>
+        <div>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" class="vis-toggle" data-id="${p.id}" ${isChecked} />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn edit-row-btn" data-id="${p.id}">✏️</button>
+          <button class="icon-btn danger delete-row-btn" data-id="${p.id}">🗑️</button>
+        </div>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Dynamic Row Event Listeners
+    document.querySelectorAll('.vis-toggle').forEach(el => {
+      el.addEventListener('change', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        const hiddenStatus = !e.target.checked;
+        await _sb.from('products').update({ is_hidden: hiddenStatus }).eq('id', id);
+        const localProd = allProducts.find(p => p.id == id);
+        if (localProd) localProd.is_hidden = hiddenStatus;
+        updateStats();
+      });
+    });
+
+    document.querySelectorAll('.edit-row-btn').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const id = el.getAttribute('data-id');
+        openEditModal(id);
+      });
+    });
+
+    document.querySelectorAll('.delete-row-btn').forEach(el => {
+      el.addEventListener('click', async (e) => {
+        const id = el.getAttribute('data-id');
+        if (confirm("Are you completely sure you want to delete this product?")) {
+          await _sb.from('products').delete().eq('id', id);
+          allProducts = allProducts.filter(p => p.id != id);
+          updateStats();
+          buildFilterDropdown();
+          renderTable();
+        }
+      });
+    });
   }
 
   $('adminSearch').addEventListener('input', renderTable);
   $('filterCat').addEventListener('change', renderTable);
 
-  // ── Render Table Functionality ──
-  function renderTable() {
-    const q   = $('adminSearch').value.trim().toLowerCase();
-    const cat = $('filterCat').value;
-
-    const list = allProducts.filter(p => {
-      const nameEn = (p.name_en || '').toLowerCase();
-      const nameAr = (p.name_ar || p.name || '').toLowerCase();
-      const catOk  = cat === 'all' || p.category === cat;
-      return catOk && (!q || nameEn.includes(q) || nameAr.includes(q));
-    });
-
-    if (!list.length) {
-      $('productTableBody').innerHTML = '<div class="empty-table">No products found</div>';
-      return;
-    }
-
-    $('productTableBody').innerHTML = '';
-    list.forEach(p => {
-      const row = document.createElement('div');
-      row.className = 'table-row';
-
-      const hasSizes = !!(p.price_sm || p.price_lg);
-      const priceDisplay = hasSizes 
-        ? `<span style="font-size:12px;">S: ${p.price_sm || 0} / L: ${p.price_lg || 0} EGP</span>`
-        : `<span>${p.price || 0} EGP</span>`;
-
-      const discountDisplay = p.discount_price 
-        ? `<span class="disc-price">${p.discount_price} EGP</span>` 
-        : '';
-
-      const badgeDisplay = p.badge 
-        ? `<span class="prod-badge-chip">${escHtml(p.badge)}</span>` 
-        : '';
-
-      const isChecked = !p.is_hidden ? 'checked' : '';
-
-      row.innerHTML = `
-        <div class="prod-thumb">
-          ${p.image_url ? `<img src="${p.image_url}" alt="" />` : catEmoji(p.category)}
-        </div>
-        <div class="prod-name-col">
-          <div class="prod-name-en">${escHtml(p.name_en || 'Untitled')} ${badgeDisplay}</div>
-          <div class="prod-name-ar">${escHtml(p.name_ar || p.name || '-')}</div>
-          <div class="prod-cat">${catEmoji(p.category)} ${escHtml(p.category)}</div>
-        </div>
-        <div class="price-col">
-          ${priceDisplay}
-          ${discountDisplay}
-        </div>
-        <div>${escHtml(p.category || '-')}</div>
-        <div class="toggle-wrap">
-          <label class="toggle">
-            <input type="checkbox" data-id="${p.id}" class="visibility-toggle" ${isChecked} />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="row-actions">
-          <button class="icon-btn edit-row-btn" data-id="${p.id}" title="Edit">✏️</button>
-          <button class="icon-btn danger delete-row-btn" data-id="${p.id}" title="Delete">🗑️</button>
-        </div>
-      `;
-      $('productTableBody').appendChild(row);
-    });
-
-    // ربط أحداث الأزرار داخل الجدول ديناميكياً
-    document.querySelectorAll('.visibility-toggle').forEach(el => {
-      el.addEventListener('change', (e) => toggleVisibility(e.target.dataset.id, e.target.checked));
-    });
-    document.querySelectorAll('.edit-row-btn').forEach(el => {
-      el.addEventListener('click', (e) => openEditModal(e.target.dataset.id));
-    });
-    document.querySelectorAll('.delete-row-btn').forEach(el => {
-      el.addEventListener('click', (e) => deleteProduct(e.target.dataset.id));
-    });
-  }
-
-  // ── Toggle Visibility ──
-  async function toggleVisibility(id, isVisible) {
-    const { error } = await _sb.from('products').update({ is_hidden: !isVisible }).eq('id', id);
-    if (error) {
-      alert('Failed to update visibility: ' + error.message);
-      loadProducts();
-    } else {
-      const prod = allProducts.find(p => String(p.id) === String(id));
-      if (prod) prod.is_hidden = !isVisible;
-      updateStats();
-    }
-  }
-
-  // ── Add Product Functionality ──
-  $('openAddModal').addEventListener('click', () => {
-    resetAddForm();
-    $('addModal').classList.add('open');
-  });
-
-  $('closeAddModalBtn').addEventListener('click', closeAddModal);
-  $('cancelAddModal').addEventListener('click', closeAddModal);
-
-  function closeAddModal() {
-    $('addModal').classList.remove('open');
-  }
-
-  function resetAddForm() {
-    $('f-name-en').value = '';
-    $('f-name-ar').value = '';
-    $('f-cat').value = '';
-    $('f-badge').value = '';
-    $('f-discount').value = '';
-    $('f-price').value = '';
-    $('f-price-sm').value = '';
-    $('f-price-lg').value = '';
-    uploadedUrl = '';
+  // ── Add Modal Pricing Mechanism ──
+  $('ptSingle').addEventListener('click', () => {
     priceType = 'single';
     $('ptSingle').classList.add('active');
     $('ptSizes').classList.remove('active');
     $('singlePriceGroup').style.display = 'block';
     $('sizePriceGroupSm').style.display = 'none';
     $('sizePriceGroupLg').style.display = 'none';
-    $('uploadPreview').style.display = 'none';
-    $('uploadText').style.display = 'block';
-    $('uploadArea').classList.remove('has-file');
-    $('uploadProgress').style.display = 'none';
-    $('uploadBar').style.width = '0%';
-  }
+  });
 
-  $('ptSingle').addEventListener('click', () => setPriceType('single'));
-  $('ptSizes').addEventListener('click', () => setPriceType('sizes'));
+  $('ptSizes').addEventListener('click', () => {
+    priceType = 'sizes';
+    $('ptSizes').classList.add('active');
+    $('ptSingle').classList.remove('active');
+    $('singlePriceGroup').style.display = 'none';
+    $('sizePriceGroupSm').style.display = 'block';
+    $('sizePriceGroupLg').style.display = 'block';
+  });
 
-  function setPriceType(type) {
-    priceType = type;
-    if (type === 'single') {
-      $('ptSingle').classList.add('active');
-      $('ptSizes').classList.remove('active');
-      $('singlePriceGroup').style.display = 'block';
-      $('sizePriceGroupSm').style.display = 'none';
-      $('sizePriceGroupLg').style.display = 'none';
-    } else {
-      $('ptSingle').classList.remove('active');
-      $('ptSizes').classList.add('active');
-      $('singlePriceGroup').style.display = 'none';
-      $('sizePriceGroupSm').style.display = 'block';
-      $('sizePriceGroupLg').style.display = 'block';
-    }
-  }
+  // ── Edit Modal Pricing Mechanism ──
+  $('ePtSingle').addEventListener('click', () => {
+    editPriceType = 'single';
+    $('ePtSingle').classList.add('active');
+    $('ePtSizes').classList.remove('active');
+    $('editSingleContainer').style.display = 'block';
+    $('editSizesContainer').style.display = 'none';
+  });
 
-  // Image Upload Handling
+  $('ePtSizes').addEventListener('click', () => {
+    editPriceType = 'sizes';
+    $('ePtSizes').classList.add('active');
+    $('ePtSingle').classList.remove('active');
+    $('editSingleContainer').style.display = 'none';
+    $('editSizesContainer').style.display = 'flex';
+  });
+
+  // ── Handle Add Image Upload ──
   $('uploadArea').addEventListener('click', () => $('uploadInput').click());
   $('uploadInput').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     $('uploadText').style.display = 'none';
+    $('uploadPreview').style.display = 'none';
     $('uploadProgress').style.display = 'block';
-    $('uploadBar').style.width = '10%';
+    $('uploadBar').style.width = '20%';
 
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
 
-    try {
-      const { data, error } = await _sb.storage.from(STORAGE_BUCKET).upload(fileName, file);
-      if (error) throw error;
+    $('uploadBar').style.width = '50%';
 
-      $('uploadBar').style.width = '100%';
-      const { data: publicData } = _sb.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-      uploadedUrl = publicData.publicUrl;
-
-      $('uploadPreview').src = uploadedUrl;
-      $('uploadPreview').style.display = 'block';
-      $('uploadArea').classList.add('has-file');
-    } catch (err) {
-      alert('Image upload failed: ' + err.message);
+    const { data, error } = await _sb.storage.from(STORAGE_BUCKET).upload(filePath, file);
+    if (error) {
+      alert("Upload failed: " + error.message);
+      $('uploadProgress').style.display = 'none';
       $('uploadText').style.display = 'block';
-    } finally {
-      setTimeout(() => { $('uploadProgress').style.display = 'none'; }, 500);
-    }
-  });
-
-  $('saveProductBtn').addEventListener('click', async () => {
-    const nameEn = $('f-name-en').value.trim();
-    const nameAr = $('f-name-ar').value.trim();
-    const category = $('f-cat').value.trim();
-    const badge = $('f-badge').value.trim();
-    const discount = parseFloat($('f-discount').value) || null;
-    const spinStyle = $('f-spin').value;
-
-    if (!nameEn || !category) {
-      alert('English Name and Category are required!');
       return;
     }
 
-    let price = null, priceSm = null, priceLg = null;
-    if (priceType === 'single') {
-      price = parseFloat($('f-price').value) || 0;
-    } else {
-      priceSm = parseFloat($('f-price-sm').value) || 0;
-      priceLg = parseFloat($('f-price-lg').value) || 0;
+    $('uploadBar').style.width = '100%';
+    const { data: publicData } = _sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+    uploadedUrl = publicData.publicUrl;
+
+    setTimeout(() => {
+      $('uploadProgress').style.display = 'none';
+      $('uploadPreview').src = uploadedUrl;
+      $('uploadPreview').style.display = 'block';
+      $('uploadArea').classList.add('has-file');
+    }, 400);
+  });
+
+  // ── Handle Edit Image Upload ──
+  $('editUploadArea').addEventListener('click', () => $('editUploadInput').click());
+  $('editUploadInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    $('editUploadText').textContent = "Uploading image...";
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { data, error } = await _sb.storage.from(STORAGE_BUCKET).upload(filePath, file);
+    if (error) {
+      alert("Upload failed: " + error.message);
+      $('editUploadText').textContent = "Click to change product image";
+      return;
     }
 
-    setSaveLoading(true);
+    const { data: publicData } = _sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+    editUploadedUrl = publicData.publicUrl;
+    $('editUploadPreview').src = editUploadedUrl;
+    $('editUploadPreview').style.display = 'block';
+    $('editUploadText').textContent = "✓ Image uploaded successfully";
+  });
 
-    const productPayload = {
-      name_en: nameEn,
-      name_ar: nameAr,
-      category: category,
-      badge: badge,
-      discount_price: discount,
-      spin_style: spinStyle,
-      price: price,
-      price_sm: priceSm,
-      price_lg: priceLg,
+  // ── Modal Triggers ──
+  $('openAddModal').addEventListener('click', () => {
+    resetAddForm();
+    $('addModal').classList.add('open');
+  });
+  
+  function closeAddModal() { $('addModal').classList.remove('open'); }
+  $('closeAddModalBtn').addEventListener('click', closeAddModal);
+  $('cancelAddModal').addEventListener('click', closeAddModal);
+
+  function resetAddForm() {
+    $('f-name').value = '';
+    $('f-badge').value = '';
+    $('f-desc').value = '';
+    $('f-discount').value = '';
+    $('f-price').value = '';
+    $('f-price-medium').value = '';
+    $('f-price-large').value = '';
+    uploadedUrl = '';
+    $('uploadPreview').style.display = 'none';
+    $('uploadText').style.display = 'block';
+    $('uploadText').textContent = "Click to upload image from your device";
+    $('uploadArea').className = 'upload-area';
+    $('ptSingle').click();
+  }
+
+  // ── Save Add Product ──
+  $('saveProductBtn').addEventListener('click', async () => {
+    const name = $('f-name').value.trim();
+    if (!name) { alert("Please enter a product name."); return; }
+
+    $('saveProductBtn').disabled = true;
+    $('saveSpin').style.display = 'inline-block';
+    $('saveBtnLabel').textContent = "Saving...";
+
+    const payload = {
+      name: name,
+      category: $('f-cat').value,
+      badge: $('f-badge').value.trim() || null,
+      description: $('f-desc').value.trim() || null,
+      discount_price: $('f-discount').value ? parseInt($('f-discount').value) : null,
       image_url: uploadedUrl || null,
       is_hidden: false
     };
 
-    const { error } = await _sb.from('products').insert([productPayload]);
-    setSaveLoading(false);
+    // Parse values depending on current state toggle
+    if (priceType === 'single') {
+      payload.price = $('f-price').value ? parseInt($('f-price').value) : null;
+      payload.price_medium = null;
+      payload.price_large = null;
+    } else {
+      payload.price = null;
+      payload.price_medium = $('f-price-medium').value ? parseInt($('f-price-medium').value) : null;
+      payload.price_large = $('f-price-large').value ? parseInt($('f-price-large').value) : null;
+    }
+
+    const { error } = await _sb.from('products').insert([payload]);
+    
+    $('saveProductBtn').disabled = false;
+    $('saveSpin').style.display = 'none';
+    $('saveBtnLabel').textContent = "Save Product";
 
     if (error) {
-      alert('Error saving product: ' + error.message);
+      alert("Error saving product: " + error.message);
     } else {
       closeAddModal();
       loadProducts();
     }
   });
 
-  function setSaveLoading(isLoading) {
-    $('saveProductBtn').disabled = isLoading;
-    if (isLoading) {
-      $('saveSpin').style.display = 'block';
-      $('saveBtnLabel').textContent = 'Saving...';
-    } else {
-      $('saveSpin').style.display = 'none';
-      $('saveBtnLabel').textContent = 'Save Product';
-    }
-  }
-
-  // ── Edit Product Functionality ──
+  // ── Open Edit Modal ──
   function openEditModal(id) {
     editingId = id;
-    const prod = allProducts.find(p => String(p.id) === String(id));
-    if (!prod) return;
+    const p = allProducts.find(item => item.id == id);
+    if (!p) return;
 
-    $('e-name-en').value = prod.name_en || '';
-    $('e-name-ar').value = prod.name_ar || prod.name || '';
-    $('e-cat').value = prod.category || '';
-    $('e-badge').value = prod.badge || '';
-    $('e-discount').value = prod.discount_price || '';
-
-    const hasSizes = !!(prod.price_sm || prod.price_lg);
-    if (hasSizes) {
-      $('e-price').style.display = 'none';
-      $('editSizesContainer').style.display = 'flex';
-      $('e-price-sm').value = prod.price_sm || '';
-      $('e-price-lg').value = prod.price_lg || '';
+    $('editModalTitle').textContent = `Edit: ${p.name}`;
+    $('e-name').value = p.name || '';
+    $('e-cat').value = p.category || 'hot';
+    $('e-badge').value = p.badge || '';
+    $('e-desc').value = p.description || '';
+    $('e-discount').value = p.discount_price || '';
+    
+    if (p.price_medium || p.price_large) {
+      $('ePtSizes').click();
+      $('e-price-medium').value = p.price_medium || '';
+      $('e-price-large').value = p.price_large || '';
+      $('e-price').value = '';
     } else {
-      $('e-price').style.display = 'block';
-      $('editSizesContainer').style.display = 'none';
-      $('e-price').value = prod.price || '';
+      $('ePtSingle').click();
+      $('e-price').value = p.price || '';
+      $('e-price-medium').value = '';
+      $('e-price-large').value = '';
+    }
+
+    editUploadedUrl = p.image_url || '';
+    if (p.image_url) {
+      $('editUploadPreview').src = p.image_url;
+      $('editUploadPreview').style.display = 'block';
+      $('editUploadText').textContent = "Click to change product image";
+    } else {
+      $('editUploadPreview').style.display = 'none';
+      $('editUploadText').textContent = "No image active. Click to upload one";
     }
 
     $('editModal').classList.add('open');
   }
 
+  function closeEditModal() { $('editModal').classList.remove('open'); }
   $('closeEditModalBtn').addEventListener('click', closeEditModal);
   $('cancelEditModal').addEventListener('click', closeEditModal);
 
-  function closeEditModal() {
-    $('editModal').classList.remove('open');
-    editingId = null;
-  }
-
+  // ── Save Changes (Edit) ──
   $('saveEditBtn').addEventListener('click', async () => {
     if (!editingId) return;
-
-    const prod = allProducts.find(p => String(p.id) === String(editingId));
-    const hasSizes = !!(prod.price_sm || prod.price_lg);
-
-    const updatePayload = {
-      name_en: $('e-name-en').value.trim(),
-      name_ar: $('e-name-ar').value.trim(),
-      category: $('e-cat').value.trim(),
-      badge: $('e-badge').value.trim(),
-      discount_price: parseFloat($('e-discount').value) || null
-    };
-
-    if (hasSizes) {
-      updatePayload.price_sm = parseFloat($('e-price-sm').value) || 0;
-      updatePayload.price_lg = parseFloat($('e-price-lg').value) || 0;
-    } else {
-      updatePayload.price = parseFloat($('e-price').value) || 0;
-    }
+    const name = $('e-name').value.trim();
+    if (!name) { alert("Name cannot be empty."); return; }
 
     $('saveEditBtn').disabled = true;
-    $('editSpin').style.display = 'block';
+    $('editSpin').style.display = 'inline-block';
 
-    const { error } = await _sb.from('products').update(updatePayload).eq('id', editingId);
-    
+    const payload = {
+      name: name,
+      category: $('e-cat').value,
+      badge: $('e-badge').value.trim() || null,
+      description: $('e-desc').value.trim() || null,
+      discount_price: $('e-discount').value ? parseInt($('e-discount').value) : null,
+      image_url: editUploadedUrl || null
+    };
+
+    if (editPriceType === 'single') {
+      payload.price = $('e-price').value ? parseInt($('e-price').value) : null;
+      payload.price_medium = null;
+      payload.price_large = null;
+    } else {
+      payload.price = null;
+      payload.price_medium = $('e-price-medium').value ? parseInt($('e-price-medium').value) : null;
+      payload.price_large = $('e-price-large').value ? parseInt($('e-price-large').value) : null;
+    }
+
+    const { error } = await _sb.from('products').update(payload).eq('id', editingId);
+
     $('saveEditBtn').disabled = false;
     $('editSpin').style.display = 'none';
 
     if (error) {
-      alert('Failed to update product: ' + error.message);
+      alert("Error updating product: " + error.message);
     } else {
       closeEditModal();
       loadProducts();
     }
   });
-
-  // ── Delete Product Functionality ──
-  async function deleteProduct(id) {
-    if (!confirm('Are you sure you want to delete this product permanently?')) return;
-
-    const { error } = await _sb.from('products').delete().eq('id', id);
-    if (error) {
-      alert('Failed to delete product: ' + error.message);
-    } else {
-      loadProducts();
-    }
-  }
 
 })();
 </script>
