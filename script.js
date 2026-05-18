@@ -187,19 +187,21 @@
       buildDynamicCategories();
     }
   }
-
-  function normalizeProduct(p) {
+function normalizeProduct(p) {
+    // تأمين قراءة الاسم الموحد من قاعدة البيانات ليعمل مع اللغتين
+    const prodName = p.name || ''; 
     return {
       id:             p.id,
-      name_en:        p.name_en || p.name || '',
-      name_ar:        p.name_ar || p.name || '',
+      name_en:        p.name_en || prodName,
+      name_ar:        p.name_ar || prodName,
       price:          p.price || null,
       price_medium:   p.price_medium || null,
       price_large:    p.price_large || null,
       discount_price: p.discount_price || null,
       category:       p.category || 'other',
       image_url:      p.image_url || '',
-      spin_type:      p.spin_type || 'float',
+      // ✅ التعديل السحري: قراءة القيمة من العمود الحقيقي في جدولك animation_style
+      spin_type:      p.animation_style || 'float', 
       badge:          p.badge || null,
       extras:         p.extras || null,
       options:        p.options || null,
@@ -207,7 +209,6 @@
       visible:        !p.is_hidden,
     };
   }
-
   function buildDynamicCategories() {
     const seen = new Set();
     allCategories = [];
