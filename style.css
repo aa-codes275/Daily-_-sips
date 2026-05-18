@@ -170,48 +170,138 @@ body[dir="rtl"] { font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif; }
 
 /* ══ INSTAPAY MODAL ══ */
 .instapay-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,20,10,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  z-index: 600; align-items: center; justify-content: center; padding: 20px;
+  display: none; 
+  position: fixed; 
+  inset: 0;
+  background: rgba(10,20,10,.55); 
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 600; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 20px;
 }
-.instapay-overlay.open { display: flex; animation: fadeIn .22s ease; }
+.instapay-overlay.open { 
+  display: flex; 
+}
 .instapay-modal {
-  background: #fff; border-radius: 28px; width: min(380px, 100%);
-  box-shadow: 0 30px 80px rgba(10,20,10,.28); border: 1px solid rgba(139,92,246,.2);
-  position: relative; overflow: hidden; animation: popIn .35s cubic-bezier(.34,1.56,.64,1); padding-bottom: 28px;
+  background: #fff; 
+  border-radius: 24px; 
+  width: min(380px, 100%);
+  box-shadow: 0 30px 80px rgba(10,20,10,.28); 
+  border: 1px solid rgba(139,92,246,.2);
+  position: relative; 
+  overflow: hidden; 
+  padding-bottom: 24px;
 }
 .instapay-close {
-  position: absolute; top: 16px; right: 16px; width: 34px; height: 34px;
-  border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.9);
-  color: var(--ink); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 10; transition: background .15s;
+  position: absolute; 
+  top: 16px; 
+  right: 16px; 
+  width: 34px; 
+  height: 34px;
+  border-radius: 50%; 
+  border: 1px solid rgba(27,58,24,0.12); 
+  background: rgba(255,255,255,.9);
+  color: #1b3a18; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  cursor: pointer; 
+  z-index: 10;
 }
-.instapay-close:hover { background: #f0f0f0; }
-.instapay-header { background: linear-gradient(135deg, #7c3aed, #8b5cf6, #a78bfa); padding: 32px 24px 24px; text-align: center; color: #fff; }
-.instapay-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
-.instapay-title-text { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; }
-.instapay-subtitle { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); }
-.instapay-number-wrap { padding: 20px 24px 0; }
-.instapay-number-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; }
-.instapay-number-row {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--pist-light); border: 1.5px solid rgba(139,92,246,.25); border-radius: 14px; padding: 12px 16px;
+.instapay-header { 
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6, #a78bfa); 
+  padding: 32px 24px 24px; 
+  text-align: center; 
+  color: #fff; 
 }
-.instapay-number { flex: 1; font-size: 20px; font-weight: 900; color: var(--ink); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
-.instapay-copy-btn {
-  display: flex; align-items: center; gap: 6px; padding: 8px 14px;
-  border-radius: 10px; border: none; background: #8b5cf6; color: #fff;
-  font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer;
-  transition: transform .14s, background .15s; flex-shrink: 0;
+.instapay-logo-wrap { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 12px; 
+  margin-bottom: 8px; 
 }
-.instapay-copy-btn:hover  { background: #7c3aed; transform: translateY(-1px); }
-.instapay-copy-btn:active { transform: scale(.95); }
-.instapay-qr-wrap { padding: 16px 24px 0; text-align: center; }
-.instapay-qr-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 12px; }
-.instapay-qr-box { display: inline-block; background: #fff; border: 2.5px solid rgba(139,92,246,.3); border-radius: 18px; padding: 14px; box-shadow: 0 0 0 6px rgba(139,92,246,.06); }
-.instapay-qr-box canvas, .instapay-qr-box img { display: block; border-radius: 8px; }
-.instapay-note { font-size: 12px; color: var(--muted); font-weight: 600; text-align: center; padding: 14px 24px 0; line-height: 1.6; }
+.instapay-title-text { 
+  font-size: 22px; 
+  font-weight: 900; 
+  letter-spacing: 1px; 
+  color: #fff; 
+}
+.instapay-subtitle { 
+  font-size: 13px; 
+  font-weight: 600; 
+  color: rgba(255,255,255,.8); 
+}
 
+/* التنسيق الصافي والمضمون للمربع والأيقونة */
+.instapay-number-wrap { 
+  padding: 24px 24px 0; 
+}
+.instapay-number-label { 
+  font-size: 11px; 
+  font-weight: 900; 
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  color: #52796f; 
+  margin-bottom: 10px; 
+  text-align: left;
+}
+.instapay-number-row {
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start;
+  gap: 12px;
+  background: #f5f0ff; 
+  border: 2px solid #8b5cf6; 
+  border-radius: 16px; 
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(139,92,246,0.08);
+  direction: ltr; /* عشان يترص صح من الشمال لليمين */
+}
+.instapay-icon-inline {
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  background: #8b5cf6; 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 10px; 
+  flex-shrink: 0;
+}
+.instapay-number { 
+  font-size: 18px; 
+  font-weight: 900; 
+  color: #1b3a18; 
+  letter-spacing: 0.5px; 
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.instapay-copy-btn {
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 8px 12px;
+  border-radius: 10px; 
+  border: none; 
+  background: #8b5cf6; 
+  color: #fff;
+  font-family: inherit; 
+  font-size: 12px; 
+  font-weight: 800; 
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: auto; /* بيزق الزرار لآخر اليمين في الـ LTR */
+}
+.instapay-note { 
+  font-size: 12px; 
+  color: #52796f; 
+  font-weight: 600; 
+  text-align: center; 
+  padding: 20px 24px 0; 
+  line-height: 1.6; 
+}
 /* ══ MENU PAGE ══ */
 .menu-page { display: none; flex-direction: column; min-height: 100dvh; padding-bottom: 30px; }
 .menu-page.active { display: flex; }
