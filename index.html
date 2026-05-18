@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Daily Sips</title>
   <script type="module">
-  import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser.js';
-  window.__removeBg = removeBackground;
-  window.__removeBgReady = true;
-</script>
+    import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser.js';
+    window.__removeBg = removeBackground;
+    window.__removeBgReady = true;
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
@@ -16,11 +16,9 @@
 </head>
 <body>
 
-<!-- ══════════════════ LANDING ══════════════════ -->
 <section class="landing" id="landing">
   <div class="landing-card">
 
-    <!-- Logo -->
     <div class="logo-wrap">
       <div class="logo-ring"></div>
       <div class="logo-circle">
@@ -30,7 +28,6 @@
       </div>
     </div>
 
-    <!-- Brand name (drawn SVG) -->
     <div class="brand-svg-wrap" aria-label="SOBĀ">
       <svg class="brand-svg" viewBox="0 0 220 52" fill="none" xmlns="http://www.w3.org/2000/svg">
         <text x="50%" y="40" text-anchor="middle"
@@ -46,10 +43,8 @@
       </svg>
     </div>
 
-    <!-- Tagline -->
-    <p class="tagline" id="tagline">Modern Daily Sips &amp; drinks • fast • fresh</p>
+    <p class="tagline" id="tagline">Modern Daily Sips & drinks • fast • fresh</p>
 
-    <!-- Social pills -->
     <div class="social-row">
       <a class="social-pill" href="https://www.instagram.com/dailysipscoffee" target="_blank" aria-label="Instagram">
         <span class="s-dot insta"></span><span id="s-insta">INSTAGRAM</span>
@@ -62,7 +57,6 @@
       </a>
     </div>
 
-    <!-- InstaPay Button -->
     <button class="instapay-btn" id="instaPayBtn" type="button">
       <svg class="instapay-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="24" height="24" rx="6" fill="#8B5CF6"/>
@@ -73,7 +67,6 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
 
-    <!-- Enter Menu -->
     <div class="enter-block">
       <div class="green-deco"></div>
       <button class="enter-btn" id="enterMenuBtn" type="button">
@@ -82,18 +75,17 @@
       </button>
     </div>
 
-    <!-- Branches -->
     <div class="branches-block">
       <p class="branches-title" id="branchesLabel">OUR BRANCHES</p>
       <div class="branches-row">
-        <a class="branch-chip" href="https://maps.google.com/?q=Hadayek+October" target="_blank">
-          <span class="branch-pin">📍</span><span id="b1">Hadayek October</span>
+        <a class="branch-chip" href="https://maps.app.goo.gl/BH4yFwY4S3qGZQ5G7?g_st=ic" target="_blank">
+          <span class="branch-pin">📍</span><span id="b1"> Dahshur</span>
         </a>
-        <a class="branch-chip" href="https://maps.google.com/?q=Sheikh+Zayed" target="_blank">
-          <span class="branch-pin">📍</span><span id="b2">Sheikh Zayed</span>
+        <a class="branch-chip" href="https://maps.app.goo.gl/QiCayEAFEUJSAE6q7?g_st=ic" target="_blank">
+          <span class="branch-pin">📍</span><span id="b2">El Ferdous </span>
         </a>
-        <a class="branch-chip" href="https://maps.google.com/?q=Hossary" target="_blank">
-          <span class="branch-pin">📍</span><span id="b3">El Hossary</span>
+        <a class="branch-chip" href="https://maps.app.goo.gl/mb4fxgbeWAaXhmr99?g_st=ic" target="_blank">
+          <span class="branch-pin">📍</span><span id="b3">El Maadi </span>
         </a>
       </div>
     </div>
@@ -101,7 +93,6 @@
   </div>
 </section>
 
-<!-- ══════════════════ INSTAPAY MODAL ══════════════════ -->
 <div class="instapay-overlay" id="instaPayOverlay">
   <div class="instapay-modal" id="instaPayModal" role="dialog" aria-modal="true">
     <button class="instapay-close" id="instaPayClose" aria-label="Close">
@@ -122,7 +113,6 @@
       <p class="instapay-subtitle" id="instaPaySubtitle">Pay instantly via InstaPay</p>
     </div>
 
-    <!-- Number display + copy -->
     <div class="instapay-number-wrap">
       <div class="instapay-number-label" id="instaPayNumberLabel">InstaPay Number</div>
       <div class="instapay-number-row">
@@ -136,7 +126,6 @@
       </div>
     </div>
 
-    <!-- QR Code -->
     <div class="instapay-qr-wrap">
       <div class="instapay-qr-label" id="instaPayQrLabel">Scan QR Code</div>
       <div class="instapay-qr-box">
@@ -148,10 +137,8 @@
   </div>
 </div>
 
-<!-- ══════════════════ MENU PAGE ══════════════════ -->
 <section class="menu-page" id="menuPage">
 
-  <!-- Topbar -->
   <div class="menu-topbar">
     <button class="back-btn" id="backBtn" aria-label="Back">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -180,15 +167,12 @@
     </button>
   </div>
 
-  <!-- Categories -->
   <div class="cat-row" id="catRow"></div>
 
-  <!-- Products -->
   <div class="products-grid" id="productGrid" aria-live="polite"></div>
 
 </section>
 
-<!-- ══════════════════ PRODUCT MODAL ══════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box" id="modalBox" role="dialog" aria-modal="true">
     <button class="modal-close" id="modalClose" aria-label="Close">
@@ -197,7 +181,6 @@
       </svg>
     </button>
 
-    <!-- Cup + Image Stage -->
     <div class="modal-stage">
       <div class="cup-wrap">
         <div class="css-cup">
@@ -210,7 +193,6 @@
       </div>
     </div>
 
-    <!-- Info -->
     <div class="modal-info">
       <h3 class="modal-name" id="modalName">—</h3>
       <div class="modal-price-wrap" id="modalPriceWrap"></div>
@@ -228,7 +210,6 @@
   </div>
 </div>
 
-<!-- ══════════════════ CART SHEET ══════════════════ -->
 <div class="cart-overlay" id="cartOverlay">
   <div class="cart-sheet" id="cartSheet">
     <div class="cart-handle"></div>
@@ -238,24 +219,14 @@
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
-      <div class="cart-inputs-row">
-        <input class="cart-input" id="tableNum" type="number" min="1" placeholder="Table #" />
-        <input class="cart-input" id="peopleNum" type="number" min="1" placeholder="Guests" />
-      </div>
-      <textarea class="cart-note" id="cartNote" placeholder="Special notes..." rows="2"></textarea>
       <div class="cart-total-box" id="cartTotalBox" style="display:none"></div>
       <button class="wa-btn" id="waBtn" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.117 1.521 5.852L0 24l6.335-1.477A11.955 11.955 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.803a9.803 9.803 0 0 1-5.032-1.387l-.361-.214-3.761.877.938-3.641-.235-.374A9.795 9.795 0 0 1 2.197 12C2.197 6.577 6.577 2.197 12 2.197S21.803 6.577 21.803 12 17.423 21.803 12 21.803z"/>
-        </svg>
         <span id="waLabel">Confirm Order</span>
       </button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"><span id="toastMsg">Added ✓</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
