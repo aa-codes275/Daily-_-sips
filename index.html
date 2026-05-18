@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Daily-Sips</title>
+  <title>Daily Sips</title>
   <script type="module">
     import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser.js';
     window.__removeBg = removeBackground;
@@ -92,7 +92,6 @@
 
   </div>
 </section>
-
 <div class="instapay-overlay" id="instaPayOverlay">
   <div class="instapay-modal" id="instaPayModal" role="dialog" aria-modal="true">
     <button class="instapay-close" id="instaPayClose" aria-label="Close">
@@ -115,28 +114,30 @@
 
     <div class="instapay-number-wrap">
       <div class="instapay-number-label" id="instaPayNumberLabel">InstaPay Number</div>
-      <div class="instapay-number-row">
-        <span class="instapay-number" id="instaPayNumber">01XXXXXXXXXX</span>
-        <button class="instapay-copy-btn" id="instaPayCopyBtn" title="Copy number">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      
+      <div class="instapay-number-row" style="display: flex; align-items: center; gap: 12px; background: #f5f0ff; border: 2px solid #8b5cf6; border-radius: 16px; padding: 12px; direction: ltr; box-shadow: 0 4px 12px rgba(139,92,246,0.08);">
+        
+        <div class="instapay-icon-inline" style="display: flex; align-items: center; justify-content: center; background: #8b5cf6; width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+            <path d="M7 12l3 3 7-7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <span class="instapay-number" id="instaPayNumber" style="flex: 1; font-size: 18px; font-weight: 900; color: #1b3a18; letter-spacing: 0.5px; font-variant-numeric: tabular-nums;">01XXXXXXXXXX</span>
+        
+        <button class="instapay-copy-btn" id="instaPayCopyBtn" title="Copy number" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; border: none; background: #8b5cf6; color: #fff; font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer; flex-shrink: 0; margin-left: auto;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
           </svg>
           <span id="copyBtnLabel">Copy</span>
         </button>
+
       </div>
     </div>
 
-    <div class="instapay-qr-wrap">
-      <div class="instapay-qr-label" id="instaPayQrLabel">Scan QR Code</div>
-      <div class="instapay-qr-box">
-        <div id="instaPayQR"></div>
-      </div>
-    </div>
-
-    <p class="instapay-note" id="instaPayNote">Scan the QR code or copy the number to pay via any bank app</p>
+    <p class="instapay-note" id="instaPayNote">Copy the number to pay instantly via any bank app</p>
   </div>
 </div>
-
 <section class="menu-page" id="menuPage">
 
   <div class="menu-topbar">
