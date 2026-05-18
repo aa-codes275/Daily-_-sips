@@ -519,21 +519,377 @@ body[dir="rtl"] { font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif; }
 .empty-state .empty-icon { font-size: 48px; opacity: .35; margin-bottom: 14px; }
 .empty-state p { font-size: 15px; font-weight: 700; }
 
-
-
-/* ══ RESPONSIVE ══ */
-@media (max-width: 380px) {
-  .landing-card  { padding: 28px 18px 26px; }
-  .products-grid { grid-template-columns: 1fr; }
-  .drink-frame   { width: 58px; height: 58px; }
-  .drink-img     { width: 54px; height: 54px; }
+/* ══════════════════ FORCE DISPLAY PAYMENT MODAL ══════════════════ */
+.payment-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(10, 20, 10, 0.6) !important; /* ماتشينج مع درجات الأخضر Ink */
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  display: none; /* بيتحول لـ flex بالجافا سكريبت مجبراً */
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important; /* رقم فلكي عشان يغطي على السلة والمنيو */
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
-@media (min-width: 600px)  { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 900px)  { .products-grid { grid-template-columns: repeat(3, 1fr); } }
-@supports (padding: max(0px)) {
-  .cart-sheet { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
-  .toast { bottom: max(30px, calc(20px + env(safe-area-inset-bottom))); }
+
+.payment-modal-content {
+  background: #ffffff !important;
+  border-radius: 28px !important; /* نفس ريديس المودال الأصلي عندك */
+  padding: 32px 24px !important;
+  width: 100% !important;
+  max-width: 360px !important;
+  text-align: center !important;
+  box-shadow: 0 30px 80px rgba(10, 30, 10, 0.25) !important;
+  border: 1px solid rgba(255, 212, 0, 0.3) !important; /* ماتشينج مع تاتش الأصفر */
+  position: relative !important;
+  box-sizing: border-box !important;
+  animation: popIn 0.35s cubic-bezier(.34, 1.56, .64, 1);
 }
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  input, textarea, select { font-size: 16px !important; }
+
+.payment-modal-content h3 {
+  font-family: 'Cairo', sans-serif !important;
+  font-size: 20px !important;
+  color: var(--ink) !important;
+  margin: 0 0 10px 0 !important;
+  font-weight: 900 !important;
+}
+
+.modal-total {
+  font-size: 15px !important;
+  color: var(--muted) !important;
+  margin-bottom: 24px !important;
+  font-weight: 700 !important;
+}
+.modal-total span {
+  color: var(--pist-dark) !important;
+  font-weight: 900 !important;
+  font-size: 19px !important;
+}
+
+.payment-options {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+}
+
+.pay-btn {
+  width: 100% !important;
+  padding: 14px !important;
+  border: 1.5px solid var(--line) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  font-family: 'Cairo', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.pay-btn:hover {
+  border-color: var(--yellow) !important;
+  background: var(--pist-light) !important;
+  transform: translateY(-2px);
+}
+
+/* زر انستا باي المخصص داخل النافذة */
+.pay-btn.instapay {
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+.pay-btn.instapay:hover {
+  background: rgba(139, 92, 246, 0.05) !important;
+  border-color: #8b5cf6 !important;
+}
+
+.close-modal-btn {
+  background: none !important;
+  border: none !important;
+  color: var(--muted) !important;
+  font-family: 'Cairo', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  margin-top: 10px !important;
+  text-decoration: underline !important;
+}
+
+/* ستايل رسالة نجاح الكاشير */
+.cash-success-msg {
+  padding: 10px 0 !important;
+}
+.cash-success-msg .success-icon {
+  font-size: 48px !important;
+  display: block !important;
+  margin-bottom: 14px !important;
+}
+
+/* وصف المشروب الجديد داخل الكارت */
+.product-desc-inline {
+  font-size: 11px !important;
+  color: #52796f !important; /* لون هادئ ومناسب للبراند */
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  margin-top: 4px !important;
+  margin-bottom: 6px !important;
+  
+  /* تحديد سطرين كحد أقصى مع وضع ثلاث نقاط لو الكلام طويل عشان الكروت تفضل متساوية */
+  display: -webkit-box !important;
+  
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* محاذاة النص حسب لغة المنيو الحالية */
+body[dir="rtl"] .product-desc-inline {
+  font-family: 'Cairo', sans-serif !important;
+  text-align: right !important;
+}
+
+body[dir="ltr"] .product-desc-inline {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  text-align: left !important;
+}
+/* ════════════════════════════════════════════════════════
+   DAILY SIPS — RESPONSIVE ULTRA EDITION
+   ✦ يشتغل على كل موبايل، تابلت، لاب توب، شاشة كبيرة
+   ✦ Safe area (notch iPhones + Android punch-hole)
+   ✦ iOS Safari، Samsung Internet، Chrome Mobile
+   ✦ Landscape / Portrait
+   ✦ Reduced motion
+   ✦ High-DPI (Retina)
+   ✦ لا يفيش scroll أفقي خالص
+════════════════════════════════════════════════════════ */
+
+/* ── منع الـ zoom على أي input في iOS بدون كسر الشكل ── */
+input, textarea, select, button {
+  font-size: 16px;          /* 16px = iOS مش بيزوم */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation; /* tap سريع زي ما هو */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── منع الـ scroll الأفقي على أي شاشة ── */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none; /* bounce جانبي يختفي في iOS */
+}
+
+/* ════════════════════════════════════
+   320px – 359px  (أصغر الموبايلات)
+   Galaxy A2, iPhone SE 1st gen, …
+════════════════════════════════════ */
+@media (max-width: 359px) {
+  .landing-card  { padding: 20px 14px 22px; border-radius: 24px; }
+  .logo-circle   { width: 82px; height: 82px; }
+  .logo-ring     { inset: -6px; }
+  .brand-svg-wrap{ max-width: 210px; }
+  .social-row    { gap: 6px; }
+  .social-pill   { padding: 6px 10px; font-size: 10px; }
+  .enter-btn     { padding: 12px 22px; font-size: 14px; letter-spacing: 1.5px; }
+  .branches-row  { gap: 6px; }
+  .branch-chip   { padding: 5px 10px; font-size: 10px; }
+
+  .products-grid { grid-template-columns: 1fr; gap: 8px; padding: 6px 10px 70px; }
+  .drink-frame   { width: 54px; height: 54px; }
+  .drink-img     { width: 48px; height: 56px; }
+  .product-name  { font-size: 12px; }
+  .price-text    { font-size: 12px; }
+
+  .modal-stage   { min-height: 220px; }
+  .modal-drink-img{ width: 150px; height: 150px; }
+  .modal-info    { padding: 14px 16px 22px; }
+  .modal-name    { font-size: 17px; }
+  .add-to-cart-btn{ padding: 13px; font-size: 14px; }
+
+  .cart-sheet    { border-radius: 22px 22px 0 0; }
+  .cart-title    { font-size: 16px; }
+  .wa-btn        { padding: 13px; font-size: 14px; }
+}
+
+/* ════════════════════════════════════
+   360px – 389px  (Standard Android)
+   Galaxy S/A series, Pixel …
+════════════════════════════════════ */
+@media (min-width: 360px) and (max-width: 389px) {
+  .landing-card  { padding: 24px 16px 24px; }
+  .logo-circle   { width: 90px; height: 90px; }
+  .products-grid { grid-template-columns: 1fr; gap: 9px; padding: 7px 11px 75px; }
+  .drink-frame   { width: 60px; height: 60px; }
+  .drink-img     { width: 54px; height: 62px; }
+  .modal-drink-img{ width: 165px; height: 165px; }
+}
+
+/* ════════════════════════════════════
+   390px – 429px  (iPhone 14/15, Pixel 7/8)
+════════════════════════════════════ */
+@media (min-width: 390px) and (max-width: 429px) {
+  .landing-card  { padding: 26px 18px 26px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .drink-frame   { width: 66px; height: 66px; }
+  .drink-img     { width: 60px; height: 68px; }
+  .modal-drink-img{ width: 200px; height: 200px; }
+}
+
+/* ════════════════════════════════════
+   430px – 519px  (iPhone Plus, Galaxy Ultra)
+════════════════════════════════════ */
+@media (min-width: 430px) and (max-width: 519px) {
+  .landing-card  { padding: 28px 22px 28px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 11px; }
+  .drink-frame   { width: 72px; height: 72px; }
+  .drink-img     { width: 65px; height: 74px; }
+  .modal-drink-img{ width: 210px; height: 210px; }
+}
+
+/* ════════════════════════════════════
+   520px – 767px  (Foldables / Small Tablets)
+   Galaxy Z Fold outer, iPad mini …
+════════════════════════════════════ */
+@media (min-width: 520px) and (max-width: 767px) {
+  .landing-card  { padding: 32px 28px 32px; max-width: 500px; margin: auto; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 13px; padding: 10px 16px 80px; }
+  .drink-frame   { width: 78px; height: 78px; }
+  .drink-img     { width: 70px; height: 80px; }
+  .modal-drink-img{ width: 220px; height: 220px; }
+  .modal-box     { width: min(440px, 100%); }
+}
+
+/* ════════════════════════════════════
+   768px – 1023px  (iPad / Tablet)
+════════════════════════════════════ */
+@media (min-width: 768px) {
+  .landing-card  { max-width: 560px; padding: 36px 36px 36px; }
+  .products-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 12px 20px 90px; }
+  .drink-frame   { width: 82px; height: 82px; }
+  .drink-img     { width: 74px; height: 84px; }
+  .modal-box     { width: min(480px, 90%); }
+  .modal-drink-img{ width: 240px; height: 240px; }
+  .modal-stage   { min-height: 320px; }
+  .cat-pill      { padding: 9px 20px; font-size: 14px; }
+  .product-name  { font-size: 14px; }
+  .cart-sheet    { max-width: 540px; left: 50%; right: auto; transform: translateX(-50%); border-radius: 28px 28px 0 0; }
+}
+
+/* ════════════════════════════════════
+   1024px+  (Desktop / Landscape iPad)
+════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .products-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; padding: 14px 24px 100px; }
+  .modal-box     { width: min(520px, 90%); }
+  .modal-drink-img{ width: 260px; height: 260px; }
+  .menu-topbar   { padding: 10px 24px; }
+  .cat-row       { padding: 14px 24px 8px; }
+}
+
+/* ════════════════════════════════════
+   Landscape – هاتف مقلوب
+════════════════════════════════════ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .landing       { padding: 12px 16px; }
+  .landing-card  { flex-direction: row; flex-wrap: wrap; gap: 12px; padding: 16px 20px; }
+  .logo-wrap     { width: 80px; height: 80px; }
+  .logo-circle   { width: 74px; height: 74px; }
+  .brand-svg-wrap{ max-width: 180px; }
+  .modal-stage   { min-height: 200px; height: 200px; }
+  .modal-drink-img{ width: 155px; height: 155px; }
+  .modal-box     { max-height: 98dvh; }
+  .products-grid { padding-bottom: 60px; }
+}
+
+/* ════════════════════════════════════
+   Landscape – تابلت مقلوب
+════════════════════════════════════ */
+@media (orientation: landscape) and (min-height: 500px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (orientation: landscape) and (min-height: 500px) and (min-width: 1024px) {
+  .products-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ════════════════════════════════════
+   Safe Area – iPhone X+, Android Notch/Punch
+   (Dynamic Island, Notch, Home Bar)
+════════════════════════════════════ */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .cart-sheet {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+  }
+  .toast {
+    bottom: calc(env(safe-area-inset-bottom) + 24px);
+  }
+  .menu-topbar {
+    padding-top: calc(env(safe-area-inset-top) + 9px);
+  }
+  .landing {
+    /* شاشات كاملة بدون قص */
+    padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+    padding-left:   max(16px, env(safe-area-inset-left));
+    padding-right:  max(16px, env(safe-area-inset-right));
+  }
+}
+
+/* ════════════════════════════════════
+   High-DPI / Retina – صور أوضح
+════════════════════════════════════ */
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi),
+       (min-resolution: 2dppx) {
+  .drink-img,
+  .modal-drink-img {
+    image-rendering: -webkit-optimize-contrast; /* WebKit */
+    image-rendering: crisp-edges;
+  }
+}
+
+/* ════════════════════════════════════
+   Reduced Motion – إمكانية الوصول
+   (إعداد نظام «تقليل الحركة»)
+════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}
+
+/* ════════════════════════════════════
+   Dark mode – مش بنغير لأن البراند محدد
+   بس بنحمي الألوان من تغيير النظام
+════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  .landing-card,
+  .modal-box .modal-info,
+  .cart-sheet,
+  .payment-modal-content {
+    color-scheme: light; /* نخلي الـ system dark mode يتجاهل العناصر دي */
+  }
+}
+
+/* ════════════════════════════════════
+   Print – لو حد طبع الصفحة
+════════════════════════════════════ */
+@media print {
+  .menu-topbar,
+  .cart-overlay,
+  .modal-overlay,
+  .toast,
+  .cart-topbar-btn { display: none !important; }
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
 }
