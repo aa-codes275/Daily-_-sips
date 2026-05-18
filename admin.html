@@ -231,22 +231,18 @@
     .icon-btn { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; background: #fff; cursor: pointer; font-size: 12px; }
 
     .empty-table { padding: 20px; text-align: center; color: var(--muted); font-weight: 700; font-size: 12px; }
-
-    /* INSTAPAY CARD */
+/* INSTAPAY CARD */
     .instapay-settings-card {
       background: var(--card); border-radius: 12px; border: 1px solid rgba(139,92,246,.12);
-      box-shadow: var(--shadow); padding: 10px; margin-bottom: 12px;
+      box-shadow: var(--shadow); padding: 16px; margin-bottom: 12px;
     }
-    .instapay-settings-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .instapay-settings-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
     .instapay-icon-badge { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #8b5cf6); display: flex; align-items: center; justify-content: center; }
-    .instapay-settings-title { font-size: 12px; font-weight: 900; }
-    .instapay-flex-layout { display: flex; flex-direction: column; gap: 8px; }
-    .instapay-num-input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--pist-light); color: var(--ink); font-weight: 700; outline: none; min-height: 36px; font-size: 13px; }
-    .instapay-qr-section { display: flex; align-items: center; gap: 8px; background: var(--pist-light); padding: 6px; border-radius: 8px; border: 1.5px dashed var(--line); }
-    .instapay-qr-preview { width: 38px; height: 38px; background: #fff; border-radius: 6px; border: 1px solid var(--line); object-fit: contain; display: none; }
-    .instapay-qr-btn { padding: 6px 10px; background: #fff; border: 1px solid var(--line); border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; min-height: 32px; }
-    .instapay-save-btn { width: 100%; padding: 8px; border-radius: 8px; border: none; background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff; font-size: 12px; font-weight: 800; cursor: pointer; min-height: 36px; }
-
+    .instapay-settings-title { font-size: 13px; font-weight: 900; color: var(--ink); }
+    .instapay-flex-layout { display: flex; flex-direction: column; gap: 10px; }
+    .instapay-num-input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--pist-light); color: var(--ink); font-weight: 700; outline: none; min-height: 40px; font-size: 14px; }
+    .instapay-save-btn { width: 100%; padding: 10px; border-radius: 8px; border: none; background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff; font-size: 13px; font-weight: 800; cursor: pointer; min-height: 40px; transition: opacity 0.2s; }
+    .instapay-save-btn:hover { opacity: 0.9; }
     /* ══════════════════════════════════════════════
        MODALS (تصغير كرت الإضافة والتعديل للموبايل)
     ══════════════════════════════════════════════ */
@@ -274,7 +270,7 @@
       background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;
     }
 
-    /* FORM ELEMENTS */
+/* FORM ELEMENTS */
     .form-grid, .form-grid-edit { display: flex; flex-direction: column; gap: 8px; }
     .form-group { display: flex; flex-direction: column; gap: 3px; width: 100%; }
     .form-label { font-size: 10px; font-weight: 800; color: var(--muted); }
@@ -290,25 +286,12 @@
     .price-type-btn { flex: 1; padding: 6px; border-radius: 6px; border: 1.5px solid var(--line); background: #fff; color: var(--muted); font-size: 11px; font-weight: 800; cursor: pointer; min-height: 32px; }
     .price-type-btn.active { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
 
-    .modal-separator { text-align: center; margin: 4px 0; color: var(--muted); font-size: 9px; font-weight: 800; position: relative; }
-    .modal-separator::before, .modal-separator::after { content: ''; position: absolute; top: 50%; width: 25%; height: 1px; background: var(--line); }
-    .modal-separator::before { right: 0; } .modal-separator::after  { left: 0; }
-
-    .upload-area { border: 2px dashed var(--line); border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; background: var(--pist-light); min-height: 54px; }
-    .upload-icon { font-size: 16px; margin-bottom: 2px; }
-    .upload-text { font-size: 10px; font-weight: 700; color: var(--muted); }
-    .upload-input { display: none; }
-    .upload-preview { max-width: 60px; max-height: 60px; border-radius: 6px; margin: 4px auto 0; display: none; }
-    .upload-progress { display: none; height: 4px; background: var(--line); margin-top: 6px; overflow: hidden; border-radius: 2px; }
-    .upload-bar { height: 100%; background: var(--green); width: 0%; }
-
     .spinner { display: none; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .m-actions { display: flex; gap: 6px; margin-top: 12px; }
     .m-save { flex: 1; padding: 8px; border-radius: 8px; border: none; background: var(--green); color: #fff; font-size: 12px; font-weight: 900; cursor: pointer; min-height: 38px; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .m-cancel { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 11px; font-weight: 800; cursor: pointer; min-height: 38px; }
-
     /* ══════════════════════════════════════════════
        RESPONSIVE DESIGN (تعديل كرت الموبايل بالملي)
     ══════════════════════════════════════════════ */
@@ -413,8 +396,7 @@
       <div class="stat-card"><div class="stat-num" id="statHidden">—</div><div class="stat-lbl">Hidden</div></div>
       <div class="stat-card"><div class="stat-num" id="statCats">—</div><div class="stat-lbl">Categories</div></div>
     </div>
-
-    <div class="section-head"><div class="section-title">InstaPay Settings</div></div>
+<div class="section-head"><div class="section-title">InstaPay Settings</div></div>
     <div class="instapay-settings-card">
       <div class="instapay-settings-head">
         <div class="instapay-icon-badge">
@@ -428,17 +410,9 @@
       </div>
       <div class="instapay-flex-layout">
         <input class="instapay-num-input" id="instaPayNumInput" type="tel" placeholder="e.g. 01234567890" maxlength="11" />
-        <div class="instapay-qr-section">
-          <img class="instapay-qr-preview" id="instaPayQrPreview" alt="QR" />
-          <div style="flex:1;">
-            <button class="instapay-qr-btn" id="instaPayQrUploadBtn" type="button">📷 Choose QR Image</button>
-            <input type="file" id="instaPayQrInput" accept="image/*" style="display:none;" />
-          </div>
-        </div>
         <button class="instapay-save-btn" id="instaPaySaveBtn">Save Settings</button>
       </div>
     </div>
-
     <div class="section-head">
       <div class="section-title">Products</div>
       <button class="add-fab" id="openAddModal">+ Add Product</button>
@@ -523,14 +497,6 @@
       <div class="form-group full">
         <label class="form-label">Product Image Source</label>
         <input class="form-input" id="f-image-url" type="url" placeholder="🔗 Paste direct image link (URL)..." />
-        <div class="modal-separator">OR UPLOAD FILE</div>
-        <div class="upload-area" id="uploadArea">
-          <div class="upload-icon">📷</div>
-          <div class="upload-text" id="uploadText">Tap to upload image</div>
-          <img class="upload-preview" id="uploadPreview" alt="preview" />
-          <input class="upload-input" id="uploadInput" type="file" accept="image/*" />
-        </div>
-        <div class="upload-progress" id="uploadProgress"><div class="upload-bar" id="uploadBar"></div></div>
       </div>
     </div>
 
@@ -628,7 +594,6 @@
 (function () {
   const SUPABASE_URL    = 'https://frerjemdrrrnjmeugokc.supabase.co';
   const SUPABASE_KEY    = 'sb_publishable_2bmCUEdFLhmDGLBQnSiQIA_zZirn5UB';
-  const STORAGE_BUCKET  = 'products-images'; 
   const ADMIN_PASSWORD  = '12345'; 
 
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -636,9 +601,6 @@
 
   let allProducts  = [];
   let editingId    = null;
-  let uploadedUrl  = '';
-  let editUploadedUrl = '';
-  let localQrBase64 = ''; 
   let priceType    = 'single';
   let editPriceType = 'single';
 
@@ -687,37 +649,25 @@
       const local = localStorage.getItem('instapay_number');
       if (local) $('instaPayNumInput').value = local;
     }
-    const savedQr = localStorage.getItem('admin_local_qr');
-    if (savedQr) {
-      localQrBase64 = savedQr;
-      $('instaPayQrPreview').src = savedQr;
-      $('instaPayQrPreview').style.display = 'block';
-    }
   }
 
-  $('instaPayQrUploadBtn').addEventListener('click', () => $('instaPayQrInput').click());
-  $('instaPayQrInput').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      localQrBase64 = event.target.result; 
-      $('instaPayQrPreview').src = localQrBase64;
-      $('instaPayQrPreview').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  });
-
+  // ─── InstaPay Save Settings ───
   $('instaPaySaveBtn').addEventListener('click', async () => {
     const num = $('instaPayNumInput').value.trim();
+    
+    if (!num) {
+      alert('Please enter an InstaPay number first!');
+      return;
+    }
+
     try {
-      if (num) {
-        await _sb.from('settings').upsert({ key: 'instapay_number', value: num }, { onConflict: 'key' });
-        localStorage.setItem('instapay_number', num);
-      }
-    } catch(e){}
-    if (localQrBase64) localStorage.setItem('admin_local_qr', localQrBase64);
-    alert('Settings Saved Successfully!');
+      await _sb.from('settings').upsert({ key: 'instapay_number', value: num }, { onConflict: 'key' });
+      localStorage.setItem('instapay_number', num);
+      alert('Settings Saved Successfully! 🎉');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to save settings to database.');
+    }
   });
 
   async function loadProducts() {
@@ -843,11 +793,7 @@
 
   $('openAddModal').addEventListener('click', () => {
     $('addModal').classList.add('open');
-    uploadedUrl = '';
     $('f-image-url').value = '';
-    $('uploadPreview').style.display = 'none';
-    $('uploadText').style.display = 'block';
-    $('uploadProgress').style.display = 'none';
   });
 
   function closeAdd() {
@@ -867,23 +813,9 @@
     $('singlePriceGroup').style.display = 'none'; $('sizePriceGroupSm').style.display = 'block'; $('sizePriceGroupLg').style.display = 'block';
   });
 
-  $('uploadArea').addEventListener('click', () => $('uploadInput').click());
-  $('uploadInput').addEventListener('change', async (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    $('f-image-url').value = ''; $('uploadText').style.display = 'none'; $('uploadProgress').style.display = 'block';
-    const ext = file.name.split('.').pop();
-    const filename = `${Date.now()}.${ext}`;
-    const { data, error } = await _sb.storage.from(STORAGE_BUCKET).upload(filename, file);
-    if (error) { alert('Upload failed'); return; }
-    const { data: urlData } = _sb.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
-    uploadedUrl = urlData.publicUrl;
-    $('uploadProgress').style.display = 'none';
-    $('uploadPreview').src = uploadedUrl; $('uploadPreview').style.display = 'block';
-  });
-
   $('saveProductBtn').addEventListener('click', async () => {
     const name = $('f-name').value.trim(); if (!name) return;
-    let finalImageUrl = $('f-image-url').value.trim() || uploadedUrl;
+    let finalImageUrl = $('f-image-url').value.trim();
     $('saveProductBtn').disabled = true;
 
     const payload = {
@@ -904,21 +836,11 @@
   });
 
   function openEditModal(p) {
-    editingId = p.id; editUploadedUrl = p.image_url || '';
+    editingId = p.id;
     $('e-name').value = p.name || ''; $('e-cat').value = p.category || 'hot';
     $('e-badge').value = p.badge || ''; $('e-desc').value = p.description || '';
     $('e-discount').value = p.discount_price || '';
-    
-    if (p.image_url && !p.image_url.includes('supabase.co/storage')) {
-      $('e-image-url').value = p.image_url; $('editUploadPreview').style.display = 'none';
-    } else {
-      $('e-image-url').value = '';
-      if (p.image_url) {
-        $('editUploadPreview').src = p.image_url; $('editUploadPreview').style.display = 'block'; $('editUploadText').style.display = 'none';
-      } else {
-        $('editUploadPreview').style.display = 'none'; $('editUploadText').style.display = 'block';
-      }
-    }
+    $('e-image-url').value = p.image_url || '';
 
     if (p.price_medium || p.price_large) {
       editPriceType = 'sizes'; $('ePtSizes').classList.add('active'); $('ePtSingle').classList.remove('active');
@@ -945,21 +867,10 @@
     $('editSingleContainer').style.display = 'none'; $('editSizesContainer').style.display = 'flex';
   });
 
-  $('editUploadArea').addEventListener('click', () => $('editUploadInput').click());
-  $('editUploadInput').addEventListener('change', async (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    const ext = file.name.split('.').pop(); const filename = `${Date.now()}_edit.${ext}`;
-    const { data, error } = await _sb.storage.from(STORAGE_BUCKET).upload(filename, file);
-    if (error) return;
-    const { data: urlData } = _sb.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
-    editUploadedUrl = urlData.publicUrl;
-    $('editUploadPreview').src = editUploadedUrl; $('editUploadPreview').style.display = 'block'; $('editUploadText').style.display = 'none';
-  });
-
   $('saveEditBtn').addEventListener('click', async () => {
     if (!editingId) return;
     const name = $('e-name').value.trim(); if (!name) return;
-    let finalImageUrl = $('e-image-url').value.trim() || editUploadedUrl;
+    let finalImageUrl = $('e-image-url').value.trim();
 
     const payload = {
       name, category: $('e-cat').value, badge: $('e-badge').value.trim() || null,
