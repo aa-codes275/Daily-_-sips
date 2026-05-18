@@ -735,30 +735,25 @@ function openModal(p) {
     if (modal) {
       modal.style.setProperty('display', 'none', 'important');
     }
-  }
-  // ─── InstaPay Modal ───
+  }// ─── InstaPay Modal ───
   function openInstaPayModal() {
+    // بنجيب الرقم المخزن أو الافتراضي
     const num = instaPayNumber || '01XXXXXXXXXX';
-    $('instaPayNumber').textContent = num;
-    const qrContainer = $('instaPayQR');
-    if (!qrContainer) return;
-    qrContainer.innerHTML = '';
-    if (instaPayNumber) {
-      instaPayQRInstance = new QRCode(qrContainer, {
-        text: instaPayNumber,
-        width: 200,
-        height: 200,
-        colorDark: '#1b3a18',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    } else {
-      qrContainer.innerHTML = '<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;background:#f0f8ee;border-radius:12px;color:#52796f;font-weight:700;font-size:13px;text-align:center;padding:20px;">No number set yet</div>';
+    
+    // بنأكد إن عنصر الرقم موجود في الـ HTML ونحط جواه الرقم
+    if ($('instaPayNumber')) {
+      $('instaPayNumber').textContent = num;
     }
-    instaPayOverlay.classList.add('open');
+    
+    // بنفتح المودال علطول من غير ما ندور على كيو أر ولا نضرب السكريبت
+    if (typeof instaPayOverlay !== 'undefined' && instaPayOverlay) {
+      instaPayOverlay.classList.add('open');
+    } else if ($('instaPayOverlay')) {
+      $('instaPayOverlay').classList.add('open');
+    }
+    
     document.body.style.overflow = 'hidden';
   }
-
   function closeInstaPayModal() {
     instaPayOverlay.classList.remove('open');
     document.body.style.overflow = '';
