@@ -1,15 +1,12 @@
 /* ══════════════════════════════════════════════
    Daily Sips MENU — script.js
-   Supabase + i18n (EN/AR) + Cart + WhatsApp + InstaPay
+   Supabase + i18n (EN/AR) + Cart + Payment Popup
 ══════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   const SUPABASE_URL = 'https://frerjemdrrrnjmeugokc.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_2bmCUEdFLhmDGLBQnSiQIA_zZirn5UB';
-  const WA_NUMBER   = '201035219469';
-  const SERVICE_FEE = 0.12;
-  const WATER_PER_GUEST = 12;
 
   const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -19,25 +16,17 @@
       tagline: 'Modern Daily Sips & drinks • fast • fresh',
       enterMenu: 'MENU',
       branchesLabel: 'OUR BRANCHES',
-      b1: 'Hadayek October',
-      b2: 'Sheikh Zayed',
-      b3: 'El Hossary',
+      b1: ' Dahshur',
+      b2: ' El Ferdous',
+      b3: ' El Maadi ',
       cats: { all: 'All' },
       cartTitle: 'Your Order',
       addLabel: 'Add to Cart',
       waLabel: 'Confirm Order',
       added: 'Added to cart ✓',
       empty: 'No items found',
-      tableHolder: 'Table #',
-      guestHolder: 'Guests',
-      noteHolder: 'Special notes...',
-      subtotal: 'Subtotal',
-      water: 'Water',
-      service: 'Service 12%',
       total: 'TOTAL',
       noCart: 'Your cart is empty',
-      tableWarn: 'Please enter your table number',
-      guestWarn: 'Please enter number of guests',
       cartWarn: 'Please add items first',
       instaPayLabel: 'InstaPay',
       instaPaySubtitle: 'Pay instantly via InstaPay',
@@ -52,25 +41,17 @@
       tagline: 'قائمة مشروبات يومية • سريع • طازج',
       enterMenu: 'المنيو',
       branchesLabel: 'فروعنا',
-      b1: 'حدائق أكتوبر',
-      b2: 'الشيخ زايد',
-      b3: 'الحصري',
+      b1: ' دهشور',
+      b2: ' الفردوس',
+      b3: 'المعادي',
       cats: { all: 'الكل' },
       cartTitle: 'طلبك',
       addLabel: 'أضف للسلة',
       waLabel: 'تأكيد الطلب',
       added: 'تمت الإضافة ✓',
       empty: 'لا توجد نتائج',
-      tableHolder: 'رقم الطاولة',
-      guestHolder: 'عدد الأفراد',
-      noteHolder: 'ملاحظاتك...',
-      subtotal: 'المطلوبات',
-      water: 'مياه',
-      service: 'خدمة 12%',
       total: 'الإجمالي',
       noCart: 'السلة فارغة',
-      tableWarn: 'أدخل رقم الطاولة',
-      guestWarn: 'أدخل عدد الأفراد',
       cartWarn: 'أضف صنف أولاً',
       instaPayLabel: 'انستا باي',
       instaPaySubtitle: 'ادفع فوراً عن طريق انستا باي',
@@ -116,18 +97,15 @@
   const cartOverlay     = $('cartOverlay');
   const cartCloseBtn    = $('cartCloseBtn');
   const cartItems       = $('cartItems');
-  const tableNum        = $('tableNum');
-  const peopleNum       = $('peopleNum');
-  const cartNote        = $('cartNote');
   const cartTotalBox    = $('cartTotalBox');
   const waBtn           = $('waBtn');
   const toast           = $('toast');
   const langEn          = $('langEn');
   const langAr          = $('langAr');
-  const instaPayBtn     = $('instaPayBtn');
   const instaPayOverlay = $('instaPayOverlay');
   const instaPayClose   = $('instaPayClose');
   const instaPayCopyBtn = $('instaPayCopyBtn');
+  const instaPayBtn     = $('instaPayBtn');
 
   // ─── INIT ───
   async function init() {
@@ -148,9 +126,13 @@
     cartTopbarBtn.addEventListener('click', openCart);
     cartCloseBtn.addEventListener('click', closeCart);
     cartOverlay.addEventListener('click', (e) => { if (e.target === cartOverlay) closeCart(); });
-    waBtn.addEventListener('click', sendWhatsApp);
-    peopleNum.addEventListener('input', renderCartTotal);
-    instaPayBtn.addEventListener('click', openInstaPayModal);
+    
+    // ربط زر تأكيد الأوردر بفتح نافذة خيارات الدفع
+    if (waBtn) waBtn.addEventListener('click', openPaymentModalSelection);
+    
+    // ربط زر انستا باي في الصفحة الرئيسية
+    if (instaPayBtn) instaPayBtn.addEventListener('click', openInstaPayModal);
+
     instaPayClose.addEventListener('click', closeInstaPayModal);
     instaPayOverlay.addEventListener('click', (e) => { if (e.target === instaPayOverlay) closeInstaPayModal(); });
     instaPayCopyBtn.addEventListener('click', copyInstaPayNumber);
@@ -206,7 +188,6 @@
     }
   }
 
-  // تعديل استقبال الحقول الجديدة من قاعدة البيانات وعمل fallback للسعر القديم إذا وجد
   function normalizeProduct(p) {
     return {
       id:             p.id,
@@ -268,9 +249,6 @@
     setText('cartTitle', t.cartTitle);
     setText('addLabel', t.addLabel);
     setText('waLabel', t.waLabel);
-    if (tableNum) tableNum.placeholder = t.tableHolder;
-    if (peopleNum) peopleNum.placeholder = t.guestHolder;
-    if (cartNote) cartNote.placeholder = t.noteHolder;
     langEn.classList.toggle('active', l === 'en');
     langAr.classList.toggle('active', l === 'ar');
     buildCategories();
@@ -324,6 +302,7 @@
     });
   }
 
+  // ─── Render Products ───
   function formatCatLabel(catId, l) {
     const map = {
       drinks: l === 'ar' ? 'مشروبات'      : 'Drinks',
@@ -346,7 +325,6 @@
     requestAnimationFrame(() => { landing.classList.remove('exit'); });
   }
 
-  // ─── Render Products ───
   function renderProducts(withEntrance) {
     if (!productGrid) return;
     const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
@@ -378,8 +356,9 @@
     } else {
       $$('.product-card').forEach(c => c.classList.add('show'));
     }
+    
   }
-function buildProductCard(p, i) {
+  function buildProductCard(p, i) {
     const name = lang === 'ar' ? (p.name_ar || p.name_en) : (p.name_en || p.name_ar);
     const side = i % 2 === 0 ? 'left' : 'right';
     const spinClass = p.spin_type || 'float';
@@ -406,10 +385,10 @@ function buildProductCard(p, i) {
 
     const imgHTML = imgSrc
       ? `<img class="drink-img ${spinClass}" src="${imgSrc}" alt="${escHtml(name)}" loading="lazy"
-              onerror="this.style.display='none';this.parentElement.querySelector('.drink-fallback').style.display='flex'">`
+               onerror="this.style.display='none';this.parentElement.querySelector('.drink-fallback').style.display='flex'">`
       : '';
 
-    // 🌟 تم تعديل الـ innerHTML لإضافة الوصف تحت الـ product-name 🌟
+    // ═══ تعديل الهيكلة ليكون الوصف منساباً بانتظام تحت اسم المشروب وصورته ═══
     card.innerHTML = `
       <div class="drink-frame">
         ${imgHTML}
@@ -420,11 +399,7 @@ function buildProductCard(p, i) {
         <p class="product-name">${escHtml(name)}</p>
         
         ${p.description ? `
-          <div class="product-desc-container" onclick="e => e.stopPropagation(); toggleDescription(this);">
-            <p class="product-desc short-desc" style="${lang === 'ar' ? 'text-align: right;' : 'text-align: left;'}">
-              ${escHtml(p.description)}
-            </p>
-          </div>
+          <p class="product-desc-inline">${escHtml(p.description)}</p>
         ` : ''}
         
         <div class="product-price-row">
@@ -438,13 +413,13 @@ function buildProductCard(p, i) {
     card.querySelector('.price-plus').addEventListener('click', e => { e.stopPropagation(); openModal(p); });
     
     return card;
-}
+  }
+
   function getCatEmoji(cat) {
     const map = { food:'🥗', soup:'🍲', ice:'🥤', drink:'🥤', drinks:'🧊', icen:'🧋', hot:'☕', coffee:'☕', juice:'🍊', cold:'🥤' };
     return map[(cat||'').toLowerCase()] || '🍽️';
   }
 
-  // تعديل عرض السعر على الكارت الخارجي ليوضح الأحجام الجديدة المتاحة
   function formatPrice(p) {
     if (p.discount_price) return `${p.discount_price} EGP`;
     if (p.price_medium && p.price_large) {
@@ -460,9 +435,7 @@ function buildProductCard(p, i) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ══════════════════════════════════════════════
-  // Spectacular Product Showcase
-  // ══════════════════════════════════════════════
+  // ─── Spectacular Product Showcase ───
   function buildProductShowcase(p) {
     const stage = document.querySelector('.modal-stage');
     if (!stage) return;
@@ -521,10 +494,7 @@ function buildProductCard(p, i) {
         ${mediaHTML}
       </div>`;
   }
-
-  // ─── Modal ───
-  // تعديل نافذة اختيار الحجم عند الضغط على المنتج لتدعم الخيارات الجديدة (Medium و Large) باللغتين
-  function openModal(p) {
+function openModal(p) {
     activeProduct = p;
     modalQty = 1;
     qtyVal.textContent = '1';
@@ -535,9 +505,23 @@ function buildProductCard(p, i) {
     const name = lang === 'ar' ? (p.name_ar || p.name_en) : (p.name_en || p.name_ar);
     modalName.textContent = name;
 
+    // ═══ الجزء الجديد: حقن الوصف داخل النافذة (الـ Modal) تحت الاسم ═══
+    // بنشيل أي وصف قديم لو كان موجود عشان ميتكررش
+    const oldDesc = modalName.parentElement.querySelector('.modal-product-desc');
+    if (oldDesc) oldDesc.remove();
+
+    if (p.description) {
+      const descP = document.createElement('p');
+      descP.className = 'modal-product-desc';
+      descP.textContent = escHtml(p.description);
+      // بنحط الوصف تحت الاسم مباشرة
+      modalName.insertAdjacentElement('afterend', descP);
+    }
+    // ═══════════════════════════════════════════════════════════
+
     modalPriceWrap.innerHTML = '';
     if (p.price_medium && p.price_large) {
-      selectedSize = 'medium'; // الحجم الافتراضي المختار عند الفتح هو وسط
+      selectedSize = 'medium';
       
       const labelMedium = lang === 'ar' ? 'وسط M' : 'Medium M';
       const labelLarge  = lang === 'ar' ? 'كبير L' : 'Large L';
@@ -574,8 +558,7 @@ function buildProductCard(p, i) {
     activeProduct = null;
   }
 
-  // ─── Cart ───
-  // تعديل دالة الإضافة إلى السلة لحساب السعر بناءً على الخيارات الجديدة وكتابة تفاصيل الحجم في الفاتورة باللغتين
+  // ─── Cart Logic ───
   function addToCart() {
     if (!activeProduct) return;
     let price = activeProduct.discount_price || activeProduct.price || 0;
@@ -586,7 +569,6 @@ function buildProductCard(p, i) {
       ? (activeProduct.name_ar || activeProduct.name_en)
       : (activeProduct.name_en || activeProduct.name_ar);
       
-    // تعريب وتحديث اسم الحجم المضاف للسلة والواتساب
     let sizeLabel = '';
     if (selectedSize === 'medium') {
       sizeLabel = lang === 'ar' ? ' (وسط)' : ' (M)';
@@ -641,47 +623,118 @@ function buildProductCard(p, i) {
     });
   }
 
+  // تم تنظيف حسابات السلة تماماً لتعرض الإجمالي الصافي للأصناف فقط
   function renderCartTotal() {
     const t = T[lang];
-    const guests = parseInt(peopleNum.value) || 0;
-    if (!cart.length || !guests) { cartTotalBox.style.display = 'none'; return; }
-    const sub   = cart.reduce((s, c) => s + c.price, 0);
-    const water = guests * WATER_PER_GUEST;
-    const svc   = (sub + water) * SERVICE_FEE;
-    const total = sub + water + svc;
+    if (!cart.length) { cartTotalBox.style.display = 'none'; return; }
+    const total = cart.reduce((s, c) => s + c.price, 0);
     cartTotalBox.style.display = 'block';
     cartTotalBox.innerHTML = `
-      <div class="total-row"><span>${t.subtotal}</span><span>${sub.toFixed(2)} EGP</span></div>
-      <div class="total-row"><span>${t.water} (${guests}×${WATER_PER_GUEST})</span><span>${water} EGP</span></div>
-      <div class="total-row"><span>${t.service}</span><span>${svc.toFixed(2)} EGP</span></div>
-      <div class="total-final"><span>${t.total}</span><span>${total.toFixed(2)} EGP*</span></div>`;
+      <div class="total-final"><span>${t.total}</span><span>${total.toFixed(2)} EGP</span></div>`;
+  }
+// دالة بناء النافذة وحقنها
+  function buildPaymentModalStructure(total) {
+    let modal = document.getElementById('paymentModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'paymentModal';
+      modal.className = 'payment-modal';
+      document.body.appendChild(modal);
+
+      // ─── الحل السحري: نربط الكليك بالنافذة الكبيرة مرة واحدة وفقط ───
+      modal.addEventListener('click', function(e) {
+        // لو ضغط على زرار موافق بتاع رسالة النجاح
+        if (e.target && e.target.id === 'successOkBtn') {
+          closePaymentModal();
+        }
+        // لو ضغط على زرار إلغاء الأصلي
+        if (e.target && e.target.id === 'closePaymentModalBtn') {
+          closePaymentModal();
+        }
+        // لو ضغط على انستا باي
+        if (e.target && (e.target.id === 'popupInstapayBtn' || e.target.closest('#popupInstapayBtn'))) {
+          closePaymentModal();
+          if (typeof openInstaPayModal === 'function') openInstaPayModal();
+        }
+        // لو ضغط على الكاشير
+        if (e.target && (e.target.id === 'popupCashBtn' || e.target.closest('#popupCashBtn'))) {
+          showCashSuccessStage(total);
+        }
+      });
+    }
+
+    const titleText = lang === 'ar' ? 'اختر طريقة الدفع' : 'Choose Payment';
+    const cashText = lang === 'ar' ? 'نقداً (توجه للكاشير)' : 'Cash (Pay at cashier)';
+    const cancelText = lang === 'ar' ? 'إلغاء' : 'Cancel';
+
+    modal.innerHTML = `
+      <div class="payment-modal-content">
+        <h3>${titleText}</h3>
+        <p class="modal-total">${T[lang].total}: <span>${total.toFixed(2)} EGP</span></p>
+        
+        <div class="payment-options">
+          <button class="pay-btn instapay" id="popupInstapayBtn" type="button">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+              <rect width="40" height="40" rx="12" fill="#8B5CF6"/>
+              <path d="M11 20l5 5 13-13" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>InstaPay — ${lang === 'ar' ? 'انستا باي' : 'InstaPay'}</span>
+          </button>
+
+          <button class="pay-btn cash" id="popupCashBtn" type="button">
+            <span class="icon">💵</span>
+            <span>${cashText}</span>
+          </button>
+        </div>
+        
+        <button class="close-modal-btn" id="closePaymentModalBtn" type="button">${cancelText}</button>
+      </div>
+    `;
   }
 
-  // ─── WhatsApp ───
-  function sendWhatsApp() {
-    const t = T[lang];
-    const table  = tableNum.value.trim();
-    const guests = parseInt(peopleNum.value) || 0;
-    const note   = cartNote.value.trim();
-    if (!cart.length)  return showToast(t.cartWarn);
-    if (!table)        return showToast(t.tableWarn);
-    if (!guests)       return showToast(t.guestWarn);
-    const sub   = cart.reduce((s, c) => s + c.price, 0);
-    const water = guests * WATER_PER_GUEST;
-    const svc   = (sub + water) * SERVICE_FEE;
-    const total = sub + water + svc;
-    let msg = `*🍹 Daily Sips — New Order*\n`;
-    msg += `Table: ${table}  |  Guests: ${guests}\n`;
-    msg += `─────────────────\n`;
-    cart.forEach((item, i) => { msg += `${i + 1}. ${item.name} — ${item.price.toFixed(2)} EGP\n`; });
-    msg += `─────────────────\n`;
-    msg += `Water (${guests}×${WATER_PER_GUEST}): ${water} EGP\n`;
-    msg += `Service 12%: ${svc.toFixed(2)} EGP\n`;
-    msg += `*TOTAL: ${total.toFixed(2)} EGP*\n`;
-    if (note) msg += `📝 Note: ${note}`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
+  // دالة تحويل محتوى النافذة لرسالة النجاح عند اختيار الكاشير
+  function showCashSuccessStage(total) {
+    const modal = document.getElementById('paymentModal');
+    if (!modal) return;
+    const content = modal.querySelector('.payment-modal-content');
+    
+    const successTitle = lang === 'ar' ? 'تم تسجيل طلبك بنجاح!' : 'Order Placed Successfully!';
+    const msgBody = lang === 'ar' 
+      ? `فضلاً توجه إلى الكاشير لدفع <strong>${total.toFixed(2)} EGP</strong> ونبدأ في تحضير مشروبك المفضل فوراً.`
+      : `Please head over to the cashier to pay <strong>${total.toFixed(2)} EGP</strong> and we will start preparing your favorite drink right away.`;
+    const okText = lang === 'ar' ? 'موافق' : 'OK';
+
+    content.innerHTML = `
+      <div class="cash-success-msg">
+        <span class="success-icon">☕</span>
+        <h3>${successTitle}</h3>
+        <p style="margin-top: 8px; color: #52796f; font-size: 14px; line-height: 1.6;">${msgBody}</p>
+        <button class="close-modal-btn" style="background: #2a6b1f !important; color: white !important; padding: 12px 24px !important; border-radius: 14px !important; margin-top: 20px !important; font-weight: bold !important; width: 100% !important; border: none !important; cursor: pointer !important; text-decoration: none !important;" id="successOkBtn" type="button">${okText}</button>
+      </div>
+    `;
   }
 
+  // فتح وإغلاق النافذة الصريح
+  function openPaymentModalSelection() {
+    if (!cart.length) {
+      showToast(T[lang].cartWarn);
+      return;
+    }
+    const total = cart.reduce((s, c) => s + c.price, 0);
+    buildPaymentModalStructure(total);
+    closeCart(); // إغلاق السلة الخلفية
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+      modal.style.setProperty('display', 'flex', 'important');
+    }
+  }
+
+  function closePaymentModal() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+      modal.style.setProperty('display', 'none', 'important');
+    }
+  }
   // ─── InstaPay Modal ───
   function openInstaPayModal() {
     const num = instaPayNumber || '01XXXXXXXXXX';
